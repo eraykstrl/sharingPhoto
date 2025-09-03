@@ -1,5 +1,16 @@
 <resources>
     <string name="app_name">SharingPhoto</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="contact_reasons">
+        <item>Mesaj Problemleri</item>
+        <item>Şifre / Giriş Problemi</item>
+        <item>Şikayet (Kullanıcı / İçerik)</item>
+        <item>Geri Bildirim</item>
+        <item>Yeni Özellik Önerisi</item>
+        <item>Destek Talebi</item>
+        <item>Diğer</item>
+    </string-array>
+
 </resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/modifyComment" android:title="Yorumu Düzenle"
+        />
+
+    <item android:id="@+id/deleteComment" android:title="Yorumu Sil"
+        />
+
+
+    <item android:id="@+id/reportComment" android:title="Şikayet Et"
+        />
+
+
+
+
+</menu>

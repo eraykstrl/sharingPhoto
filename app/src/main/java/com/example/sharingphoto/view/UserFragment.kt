@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.example.sharingphoto.databinding.FragmentUserBinding
+import com.example.sharingphoto.viewmodel.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -19,10 +21,14 @@ class UserFragment : Fragment() {
 
     private lateinit var auth : FirebaseAuth
 
+    private lateinit var viewModel : UserViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         auth = Firebase.auth
+        viewModel = ViewModelProvider(this)[UserViewModel::class.java]
+
 
     }
 
@@ -38,61 +44,65 @@ class UserFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.signUpButton.setOnClickListener { signUp(it) }
-        binding.signInButton.setOnClickListener { signIn(it) }
+        binding.signUpButton.setOnClickListener {   signUp(it) }
 
-        val currentUser = auth.currentUser
-        if(currentUser != null)
-        {
-            // user entered previously
-            val action = UserFragmentDirections.actionUserFragmentToFeedFragment()
-            findNavController().navigate(action)
+        binding.youHaveAccount.setOnClickListener {
+            val action = UserFragmentDirections.actionUserFragmentToSignInFragment()
+            updateUI(action)
         }
+
+        observerLiveData()
+
     }
 
-    fun signUp(view : View)
+    private fun signUp(view : View)
     {
-        val email = binding.emailText.text.toString()
+        val name = binding.nameEditText.text.toString()
+        val surname = binding.surnameEditText.text.toString()
+        val username = binding.usernameEditText.text.toString()
+        val email = binding.emailEditText.text.toString()
         val password = binding.passwordText.text.toString()
+        viewModel.signUp(name,surname,username,email,password)
+    }
 
-        if(email.isNotEmpty() &&  password.isNotEmpty())
-        {
-            auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener {
-                task->
-                if(task.isSuccessful)
-                {
-                    val action = UserFragmentDirections.actionUserFragmentToFeedFragment()
-                    findNavController().navigate(action)   // user was created here
+    private fun observerLiveData()
+    {
+        viewModel.signUpLiveData.observe(viewLifecycleOwner) {
+            user ->
+            user?.let {
+                val action = UserFragmentDirections.actionUserFragmentToSignInFragment()
+                updateUI(action)
+            }
+        }
+        viewModel.errorLiveData.observe(viewLifecycleOwner) {
+            error ->
+            if(error != null)
+            {
+                val alert = android.app.AlertDialog.Builder(requireContext())
+                alert.setTitle("Bir hata oluştu")
+                alert.setMessage("Bir hata oluştu lütfen tekrar deneyiniz ${error}")
+                alert.setPositiveButton("Tamam") {
+                        dialog,which->
+                    dialog.dismiss()
                 }
-            }.addOnFailureListener {
-                exception->
-                Toast.makeText(requireContext(),exception.localizedMessage, Toast.LENGTH_LONG).show()
+                alert.show()
             }
         }
     }
+
+    private fun updateUI(action : NavDirections)
+    {
+        findNavController().navigate(action)
+    }
+
 
     fun clear()
     {
-        binding.emailText.setText("")
+        binding.emailEditText.setText("")
         binding.passwordText.setText("")
     }
 
-    fun signIn(view : View)
-    {
-        val email = binding.emailText.text.toString()
-        val password = binding.passwordText.text.toString()
 
-        if(email.isNotEmpty() && password.isNotEmpty())
-        {
-            auth.signInWithEmailAndPassword(email,password).addOnSuccessListener {
-                val action = UserFragmentDirections.actionUserFragmentToFeedFragment()
-                findNavController().navigate(action)
-            }.addOnFailureListener {
-                exception->
-                Toast.makeText(requireContext(),exception.localizedMessage, Toast.LENGTH_LONG).show()
-            }
-        }
-    }
 
     override fun onResume() {
         super.onResume()

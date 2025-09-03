@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.NotificationFragment"
+    android:background="#CFD8DC"
+    >
+
+
+    <TextView
+        android:id="@+id/notificationTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="10dp"
+        android:text="Bildirim Ayarları"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:background="@drawable/text_border"
+        android:padding="10dp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        />
+
+    <TextView
+        android:id="@+id/messageTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_border"
+        android:padding="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="Mesaj Bildirimleri"
+        android:textColor="#FFF59D"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/notificationTextView"
+        android:layout_marginEnd="80dp"
+        android:layout_marginStart="30dp"
+        />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/messageSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/messageTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/notificationTextView"
+        android:layout_marginTop="30dp"
+        app:switchPadding="10dp"
+        android:thumbTint="@color/switch_color"
+        app:trackTint="@color/switch_color"
+        android:layout_marginEnd="10dp"
+        />
+
+    <TextView
+        android:id="@+id/applicationTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_border"
+        android:padding="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="Uygulama Bildirimleri"
+        android:textColor="#FFF59D"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/messageTextView"
+        android:layout_marginEnd="80dp"
+        android:layout_marginStart="30dp"
+        />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/applicationSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/messageTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/messageSwitch"
+        android:layout_marginTop="30dp"
+        app:switchPadding="10dp"
+        android:thumbTint="@color/switch_color"
+        app:trackTint="@color/switch_color"
+        android:layout_marginEnd="10dp"
+        />
+
+    <TextView
+        android:id="@+id/likeTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/button_border"
+        android:padding="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="Beğeni Bildirimleri"
+        android:textColor="#FFF59D"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/applicationTextView"
+        android:layout_marginEnd="80dp"
+        android:layout_marginStart="30dp"
+        />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/likeSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/messageTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/applicationTextView"
+        android:layout_marginTop="30dp"
+        app:switchPadding="10dp"
+        android:thumbTint="@color/switch_color"
+        app:trackTint="@color/switch_color"
+        android:layout_marginEnd="10dp"
+        />
+
+    <TextView
+        android:id="@+id/commentTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/button_border"
+        android:padding="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="Yorum Bildirimleri"
+        android:textColor="#FFF59D"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/likeTextView"
+        android:layout_marginEnd="80dp"
+        android:layout_marginStart="30dp"
+        />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/commentSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/messageTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/likeTextView"
+        android:layout_marginTop="30dp"
+        app:switchPadding="10dp"
+        android:thumbTint="@color/switch_color"
+
+        app:trackTint="@color/switch_color"
+        android:layout_marginEnd="10dp"
+        />
+
+    <TextView
+        android:id="@+id/securityTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/button_border"
+        android:padding="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="Güvenlik Bildirimleri"
+        android:textColor="#FFF59D"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/commentTextView"
+        android:layout_marginEnd="80dp"
+        android:layout_marginStart="30dp"
+        />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/securitySwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/messageTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/commentTextView"
+        android:layout_marginTop="30dp"
+        app:switchPadding="10dp"
+        android:thumbTint="@color/switch_color"
+        app:trackTint="@color/switch_color"
+        android:layout_marginEnd="10dp"
+        />
+
+
+    <TextView
+        android:id="@+id/followTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/button_border"
+        android:padding="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="Takip Bildirimleri"
+        android:textColor="#FFF59D"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/securityTextView"
+        android:layout_marginEnd="80dp"
+        android:layout_marginStart="30dp"
+        />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/followSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/messageTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/securityTextView"
+        android:layout_marginTop="30dp"
+        app:switchPadding="10dp"
+        android:thumbTint="@color/switch_color"
+        app:trackTint="@color/switch_color"
+        android:layout_marginEnd="10dp"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/saveChangesButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:text="Değişiklikleri Kaydet"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/followTextView"
+        android:background="@drawable/text_border"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:textAllCaps="false"
+        android:layout_marginTop="30dp"
+        android:focusable="true"
+        android:clickable="true"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/previousSettingsButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:text="Varsayılan Ayarlara Geri Dön"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/saveChangesButton"
+        android:background="@drawable/button_border"
+        android:textColor="#FFF59D"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:textAllCaps="false"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+
+        />
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,2 @@
+Doğrula butonuna tıkladıktan sonra mail adresinize bir bağlantı gönderilecek. Bağlantıya tıklayarak mail adresinizi doğrualayabilirsiniz.
+Ayrıca mail adresinizi değiştirmek istiyorsanız yeni mail adresinizi girip değiştir butonuna tıklayabilirsiniz.

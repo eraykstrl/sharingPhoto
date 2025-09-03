@@ -19,10 +19,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.example.sharingphoto.databinding.FragmentUploadBinding
+import com.example.sharingphoto.viewmodel.UploadViewModel
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -30,6 +33,8 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 class UploadFragment : Fragment() {
@@ -40,19 +45,21 @@ class UploadFragment : Fragment() {
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var permissionLauncher : ActivityResultLauncher<String>
 
-    var selectedPicture : Uri? =null
-    var selectedBitmap  : Bitmap? =null
+    private var selectedPicture : Uri? =null
+    private var selectedBitmap  : Bitmap? =null
 
     private lateinit var auth : FirebaseAuth
     private lateinit var storage : FirebaseStorage
-    private lateinit var db : FirebaseFirestore
+    private lateinit var firestore : FirebaseFirestore
+
+    private lateinit var viewModel : UploadViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
         storage = Firebase.storage
-        db = Firebase.firestore
+        firestore = Firebase.firestore
 
         registerLaunchers()
     }
@@ -69,10 +76,27 @@ class UploadFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(this)[UploadViewModel::class.java]
+
         binding.uploadButton.setOnClickListener { uploadButton(it) }
         binding.imageView.setOnClickListener { selectImage(it) }
-        binding.commentText.setOnClickListener {  }
+
+        observerLiveData()
+
+        binding.settingsImageView.setOnClickListener {
+            val action = UploadFragmentDirections.actionUploadFragmentToSettingsFragment()
+            updateUI(action)
+        }
+        binding.homePageImageView.setOnClickListener {
+            val action = UploadFragmentDirections.actionUploadFragmentToFeedFragment()
+            updateUI(action)
+        }
+
+
     }
+
+
+
 
 
     fun uploadButton(view : View)
@@ -81,6 +105,7 @@ class UploadFragment : Fragment() {
         val uuid = UUID.randomUUID()
         val imageName = "$uuid"
         val imagesReference = reference.child("images").child(imageName)
+        val userComment = binding.commentText.text.toString()
 
 
         if(selectedPicture != null)
@@ -94,25 +119,13 @@ class UploadFragment : Fragment() {
                     {
                         val downloadUrl = success.toString()
 
-                        val postMap = hashMapOf<String, Any>()
-                        postMap.put("downloadUrl",downloadUrl)
-                        postMap.put("email",auth.currentUser!!.email.toString())
-                        postMap.put("comment",binding.commentText.text.toString())
-                        postMap.put("date", Timestamp.now())
+                        lifecycleScope.launch(Dispatchers.IO) {
 
-                        db.collection("Posts").add(postMap).addOnSuccessListener {
-                            success->
+                            viewModel.setPosts(userComment,downloadUrl)
 
-                            val action = UploadFragmentDirections.actionUploadFragmentToFeedFragment()
-                            findNavController().navigate(action)
-
-                        }.addOnFailureListener {
-                            exception->
-                            Toast.makeText(requireContext(),exception.localizedMessage, Toast.LENGTH_LONG).show()
                         }
+
                     }
-
-
 
                 }
             }.addOnFailureListener {
@@ -122,6 +135,8 @@ class UploadFragment : Fragment() {
             }
         }
     }
+
+
 
     fun selectImage(view : View)
     {
@@ -134,23 +149,19 @@ class UploadFragment : Fragment() {
                     Snackbar.make(view,"Galeriye gitmek için izin vermeniz gerekiyor", Snackbar.LENGTH_INDEFINITE).setAction("İzin Ver"
 
                     , View.OnClickListener{
-                        //izin istememiz lazım
                         permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
                         }).show()
                 }
 
                else
                 {
-                    //izin istememiz lazım
                     permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
                 }
            }
 
            else
            {
-               // izin var galeriye gidebiliriz
-               val intentToGallery =
-                   Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+               val intentToGallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                activityResultLauncher.launch(intentToGallery)
            }
 
@@ -177,11 +188,30 @@ class UploadFragment : Fragment() {
 
             else
             {
-                val intentToGallery =
-                    Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                val intentToGallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 activityResultLauncher.launch(intentToGallery)
             }
-            // read external storage
+        }
+    }
+
+    private fun updateUI(action : NavDirections)
+    {
+        findNavController().navigate(action)
+    }
+
+    private fun observerLiveData()
+    {
+        viewModel.information.observe(viewLifecycleOwner) {
+            result->
+            if(result == 1)
+            {
+                val action = UploadFragmentDirections.actionUploadFragmentToFeedFragment()
+                updateUI(action)
+            }
+            else
+            {
+                println(result)
+            }
         }
     }
 
@@ -226,7 +256,6 @@ class UploadFragment : Fragment() {
             result->
             if(result)
             {
-                // izin verildi
                 val intentToGallery =
                     Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 activityResultLauncher.launch(intentToGallery)
@@ -235,7 +264,6 @@ class UploadFragment : Fragment() {
             else
             {
                 Toast.makeText(requireContext(),"İzni reddettiniz, izne ihtiyacımız var.", Toast.LENGTH_LONG).show()
-                // izin verilmedi
             }
         }
     }

@@ -1,0 +1,55 @@
+LafSal aslında benim kendi öğrenme yolculuğumun bir ürünü.
+Kendimi geliştirmek için başladığım bu projede, sosyal medya konsepti üzerinden hem güncel teknolojileri deniyorum hem de öğrendiklerimi pratiğe döküyorum.
+Kullandığım teknolojiler arasında Firebase ve MVVM mimarisi başta olmak üzere pek çok yeni şey var. Yani LafSal, benim için sadece bir sosyal medya uygulaması değil; aynı zamanda yazılımda kendimi ileri taşımam için kurduğum bir “oyun alanı”.
+
+Eray Kösterelioğlu – Hakkımda
+
+Ben Eray Kösterelioğlu. Yazılım geliştirme yolculuğumda farklı alanlarda birçok proje geliştirdim; masaüstü uygulamalardan mobil uygulamalara, backend servislerden yapay zekâ ve otonom sistemlere kadar geniş bir yelpazede çalıştım.
+
+Yazılım ve Backend
+
+ASP.NET projeleri geliştirdim; özellikle kullanıcı yönetimi, kimlik doğrulama, şifreleme, rol bazlı yetkilendirme ve RESTful servislerin oluşturulması konularında çalıştım.
+
+FastAPI tabanlı sunucu projeleri geliştirdim; telemetri paylaşımı, oturum yönetimi, kilitlenme süreleri hesaplama gibi görevlerde kullanılan API’ler tasarladım.
+
+Veritabanı yönetimi (Firestore, SQL) ile kullanıcı verileri ve uygulama içi dataların güvenli bir şekilde tutulmasını sağladım.
+
+ASP.NET ile Yemek Siparişi için güzel bir web sitesi tasarladım.
+
+Android & Mobil Uygulamalar
+
+Kotlin & Android Studio ile modern, kullanıcı dostu ve performans odaklı mobil uygulamalar geliştirdim.
+
+MVVM mimarisi ile sürdürülebilir, esnek ve test edilebilir uygulama yapıları oluşturdum.
+
+SharedPreferences, Room, Firebase Authentication ve Firestore ile kullanıcı yönetimi, veri depolama ve senkronizasyon çözümleri üzerine aktif olarak çalıştım.
+
+Coroutine ve RxJava kullanarak asenkron işlemleri etkin biçimde yönettim, uygulamalarımın performansını artırdım.
+
+Retrofit ile network işlemlerini yönettim; Picasso ve Glide ile görsel yükleme ve işleme optimizasyonlarını sağladım.
+
+ConstraintLayout, RecyclerView, ViewModel, LiveData ve Material Design bileşenlerini kullanarak modern ve kullanıcı deneyimi odaklı arayüzler tasarladım.
+
+Android uygulamalarımda modern mimarilere uygun yapılar kurarak hem performans hem de sürdürülebilirlik odaklı çözümler ürettim.
+
+Bu deneyimlerimle, Android tarafında güçlü, modern ve kullanıcı odaklı uygulamalar geliştirebiliyorum ve sıradaki hedefim Jetpack Compose ile daha modern arayüzler geliştirmek.
+
+Masaüstü & Gömülü Sistemler
+
+PyQt5 ile yer kontrol istasyonu (Ground Control Station) geliştirdim; canlı video aktarımı, telemetri takibi, otonom görev yönetimi gibi özellikler ekledim.
+
+NVIDIA Jetson Nano üzerinde gerçek zamanlı görüntü işleme projeleri geliştirdim.
+
+OpenCV + YOLOv8 ile nesne tespiti, işaret tanıma ve hedef kilitlenme sistemleri kurdum.
+
+Pixhawk + MAVLink/DroneKit ile uçuş kontrol sistemleri tasarladım; kalkış, iniş, rota takibi, yaklaşma/kaçış/loiter gibi farklı uçuş modlarını hayata geçirdim.
+
+Socket tabanlı iletişim ile Jetson üzerinde işlenen görüntüleri yer kontrol istasyonuna aktardım.
+
+Misyon & Vizyon
+
+Benim için yazılım sadece bir meslek değil, aynı zamanda sürekli öğrenme ve üretme tutkusu.
+
+Misyonum: Edindiğim bilgi ve tecrübeleri gerçek dünyaya uygulanabilir projelere dönüştürmek, özellikle savunma teknolojileri, yapay zekâ ve mobil yazılım alanında değer katmak.
+
+Vizyonum: Hem ulusal hem de uluslararası ölçekte tanınan projeler üretmek, yazılım alanında bulunduğum yere liderlik etmek.

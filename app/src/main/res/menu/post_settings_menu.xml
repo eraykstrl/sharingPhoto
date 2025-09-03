@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/modifyPost" android:title="Gönderiyi Düzenle"
+        />
+
+    <item android:id="@+id/sharePost" android:title="Paylaş"
+        />
+
+    <item android:id="@+id/savePost" android:title="Kaydet"
+        />
+
+    <item android:id="@+id/deletePostItem" android:title="Gönderiyi Sil" >
+
+    </item>
+
+    <item android:id="@+id/reportPostItem" android:title="Şikayet Et">
+
+    </item>
+
+</menu>

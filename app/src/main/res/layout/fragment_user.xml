@@ -1,56 +1,243 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+
+
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.UserFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.UserFragment">
+    android:background="@color/white"
+    >
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+   >
+
+    <TextView
+        android:id="@+id/signUpTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="10dp"
+        android:text="Kayıt Ol"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:background="@drawable/text_border"
+        android:padding="10dp"
+        android:gravity="center"
+
+        />
+
+    <TextView
+        android:id="@+id/nameTextViewSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signUpTextView"
+        android:layout_marginTop="10dp"
+        android:text="Ad"
+        android:textSize="20sp"
+        android:background="@drawable/title_border"
+        android:textStyle="bold"
+        android:padding="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        />
 
 
     <EditText
-        android:id="@+id/emailText"
-        android:layout_width="250dp"
+        android:id="@+id/nameEditText"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="30dp"
+        android:ems="10"
+        android:hint="Adınızı giriniz"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nameTextViewSignUp"
+        android:background="@drawable/text_border"
+        android:paddingStart="10dp"
+        />
+
+    <TextView
+        android:id="@+id/surnameTextViewSignUp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="70dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameEditText"
+        android:layout_marginTop="20dp"
+        android:text="Soyad"
+        android:textSize="20sp"
+        android:background="@drawable/title_border"
+        android:textStyle="bold"
+        android:padding="10dp"
+        />
+
+    <EditText
+        android:id="@+id/surnameEditText"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="30dp"
+        android:ems="10"
+        android:hint="Soyadınızı giriniz"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/surnameTextViewSignUp"
+        android:background="@drawable/text_border"
+        android:paddingStart="10dp"
+        />
+
+    <TextView
+        android:id="@+id/usernameTextViewSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/surnameEditText"
+        android:layout_marginTop="20dp"
+        android:text="Kullanıcı Adı"
+        android:textSize="20sp"
+        android:background="@drawable/title_border"
+        android:textStyle="bold"
+        android:padding="10dp"
+        />
+
+    <EditText
+        android:id="@+id/usernameEditText"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="30dp"
+        android:ems="10"
+        android:hint="Kullanıcı adınızı giriniz"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/usernameTextViewSignUp"
+        android:background="@drawable/text_border"
+        android:paddingStart="10dp"
+        />
+
+    <TextView
+        android:id="@+id/emailTextViewSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/usernameEditText"
+        android:layout_marginTop="20dp"
+        android:text="Email"
+        android:textSize="20sp"
+        android:background="@drawable/title_border"
+        android:textStyle="bold"
+        android:padding="10dp"
+        />
+
+
+    <EditText
+        android:id="@+id/emailEditText"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="30dp"
         android:ems="10"
         android:hint="Email giriniz"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/emailTextViewSignUp"
+        android:background="@drawable/text_border"
+        android:paddingStart="10dp"
+        />
+
+    <TextView
+        android:id="@+id/passwordTextViewSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emailEditText"
+        android:layout_marginTop="20dp"
+        android:text="Şifre"
+        android:textSize="20sp"
+        android:background="@drawable/title_border"
+        android:textStyle="bold"
+        android:padding="10dp"
+        />
 
     <EditText
         android:id="@+id/passwordText"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="30dp"
         android:ems="10"
         android:hint="Şifre giriniz"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailText" />
+        app:layout_constraintTop_toBottomOf="@+id/passwordTextViewSignUp"
+        android:background="@drawable/text_border"
+        android:paddingStart="10dp"/>
 
     <Button
         android:id="@+id/signUpButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="Kayit Ol"
-        app:layout_constraintStart_toStartOf="@+id/passwordText"
-        app:layout_constraintTop_toBottomOf="@+id/passwordText" />
-
-    <Button
-        android:id="@+id/signInButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="Giriş Yap"
+        android:text="Kayıt Ol"
         app:layout_constraintEnd_toEndOf="@+id/passwordText"
-        app:layout_constraintTop_toBottomOf="@+id/passwordText" />
+        app:layout_constraintStart_toStartOf="@+id/passwordText"
+        app:layout_constraintTop_toBottomOf="@+id/passwordText"
+        app:layout_constraintBottom_toTopOf="@+id/youHaveAccount"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp"
+
+        />
+
+
+    <TextView
+        android:id="@+id/youHaveAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Zaten hesabın var mı?"
+        app:layout_constraintBottom_toBottomOf="@+id/emptyView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/text_border"
+        android:padding="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginBottom="10dp"
+        />
+    
+    <View
+        android:id="@+id/emptyView"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
