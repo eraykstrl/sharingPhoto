@@ -1,5 +1,6 @@
 package com.example.sharingphoto.repository
 
+import androidx.lifecycle.viewModelScope
 import com.example.sharingphoto.model.Comment
 import com.example.sharingphoto.model.Post
 import com.google.firebase.FirebaseException
@@ -11,6 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.Date
@@ -68,10 +70,7 @@ class FeedRepository {
         return post
     }
 
-    fun updateComment(comment : Comment) : Comment?
-    {
-       return comment
-    }
+
 
     suspend fun updateComments(postId : String,comment : Comment) : MutableList<Comment>
     {
@@ -178,4 +177,8 @@ class FeedRepository {
             val modifiedPost = firestore.collection("Posts").document(postId)
             modifiedPost.update("userComment", comment).await()
     }
+
+
+
+
 }

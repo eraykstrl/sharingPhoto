@@ -26,6 +26,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.sharingphoto.R
 import com.example.sharingphoto.adapter.PostAdapter
 import com.example.sharingphoto.databinding.FragmentProfileBinding
@@ -84,8 +85,8 @@ class ProfileFragment : Fragment() {
             println("user id'si $info")
             if(currentUser != null)
             {
-                lifecycleScope.launch(Dispatchers.Main) {
-                    viewModel.getPosts(info)
+                lifecycleScope.launch(Dispatchers.IO) {
+                    viewModel.getPostsFromInternet(info)
                 }
                 postAdapter(info)
 
@@ -212,10 +213,13 @@ class ProfileFragment : Fragment() {
                         {
                             val source = ImageDecoder.createSource(requireActivity().contentResolver,selectedImage!!)
                             selectedBitmap = ImageDecoder.decodeBitmap(source)
+                            binding.profilePhotoImageView.setImageBitmap(selectedBitmap)
                         }
                         else
                         {
                             selectedBitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver,selectedImage!!)
+                            binding.profilePhotoImageView.setImageBitmap(selectedBitmap)
+
                         }
                     }
 
@@ -454,11 +458,20 @@ class ProfileFragment : Fragment() {
                 }
 
                 popUp.show()
+            },
+            clickPost = {
+                userId->
+                val action = ProfileFragmentDirections.actionProfileFragmentToPersonalPostFragment(userId)
+                updateUI(action)
+            },
+            clickUsername =  {
+                userId ->
             }
 
         )
 
-        binding.profileRecyclerView.layoutManager = GridLayoutManager(requireContext(),2)
+        binding.profileRecyclerView.layoutManager = StaggeredGridLayoutManager(3,
+            StaggeredGridLayoutManager.VERTICAL)
         binding.profileRecyclerView.adapter = postAdapter
     }
 

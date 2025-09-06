@@ -4,6 +4,7 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.sharingphoto.model.Post
 import com.example.sharingphoto.model.User
 import com.google.firebase.FirebaseException
@@ -13,6 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
@@ -27,13 +29,12 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     val userLiveData = MutableLiveData<User>()
 
-    suspend fun getPosts(userId : String)
+    suspend fun getPostsFromInternet(userId : String)
     {
         try
         {
             val posts = firestore.collection("Posts").whereEqualTo("user_id",userId).get().await().toObjects(
                 Post::class.java)
-            postList.clear()
             postList.addAll(posts)
             withContext(Dispatchers.Main) {
                 postLiveData.value = postList

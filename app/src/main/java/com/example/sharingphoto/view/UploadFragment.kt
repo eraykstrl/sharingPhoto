@@ -79,7 +79,7 @@ class UploadFragment : Fragment() {
         viewModel = ViewModelProvider(this)[UploadViewModel::class.java]
 
         binding.uploadButton.setOnClickListener { uploadButton(it) }
-        binding.imageView.setOnClickListener { selectImage(it) }
+        binding.uploadPhotoImageView.setOnClickListener { selectImage(it) }
 
         observerLiveData()
 
@@ -94,8 +94,6 @@ class UploadFragment : Fragment() {
 
 
     }
-
-
 
 
 
@@ -120,7 +118,6 @@ class UploadFragment : Fragment() {
                         val downloadUrl = success.toString()
 
                         lifecycleScope.launch(Dispatchers.IO) {
-
                             viewModel.setPosts(userComment,downloadUrl)
 
                         }
@@ -232,14 +229,11 @@ class UploadFragment : Fragment() {
                         {
                             val source = ImageDecoder.createSource(requireActivity().contentResolver,selectedPicture!!)
                             selectedBitmap = ImageDecoder.decodeBitmap(source)
-                            binding.imageView.setImageBitmap(selectedBitmap)
-
                         }
 
                         else
                         {
                             selectedBitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver,selectedPicture)
-                            binding.imageView.setImageBitmap(selectedBitmap)
                         }
                     }
 

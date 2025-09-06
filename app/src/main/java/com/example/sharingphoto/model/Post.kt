@@ -1,10 +1,13 @@
 package com.example.sharingphoto.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.util.Date
 
-
+@Entity
 data class Post(
 
+    @PrimaryKey
     val postId :String ?= "",
     val userComment : String ?= "",
     var comment: MutableList<Comment> = mutableListOf(),

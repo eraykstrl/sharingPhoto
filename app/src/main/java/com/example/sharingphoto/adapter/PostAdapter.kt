@@ -29,6 +29,8 @@ class PostAdapter(
     val modifyComment : (String,Comment) -> Unit,
     val openPopUpComment :(CommentHolder, Comment, View) -> Unit,
     val openPopUpPost : (PostHolder,Post, View) -> Unit,
+    val clickPost :(String) -> Unit,
+    val clickUsername : (String) -> Unit,
 
     ) : RecyclerView.Adapter<PostAdapter.PostHolder>() {
 
@@ -53,13 +55,20 @@ class PostAdapter(
         holder: PostHolder,
         position: Int,
     ) {
+        val post = postList[position]
+
 
         holder.binding.likeImageView.setOnClickListener {
 
         }
 
 
-        val post = postList[position]
+        holder.binding.recyclerImageView.setOnClickListener {
+            post.user_id?.let {
+                userId ->
+                clickPost(userId)
+            }
+        }
         val adapter = commentAdapters.getOrPut(post.postId!!) {
             CommentAdapter(commentList,onCommentClick,modifyComment,openPopUpComment)
         }
@@ -70,11 +79,9 @@ class PostAdapter(
         )
 
         holder.binding.usernameLinearLayout.setOnClickListener {
-            val userId = post.user_id
-            if(userId != null)
-            {
-                val action = FeedFragmentDirections.actionFeedFragmentToProfileFragment(userId)
-                it.findNavController().navigate(action)
+            post.user_id?.let {
+                userId ->
+                clickUsername(userId)
             }
         }
 

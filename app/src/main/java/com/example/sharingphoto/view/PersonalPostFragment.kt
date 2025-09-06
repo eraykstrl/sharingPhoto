@@ -1,6 +1,5 @@
 package com.example.sharingphoto.view
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.ContextThemeWrapper
@@ -10,141 +9,100 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.sharingphoto.R
 import com.example.sharingphoto.adapter.PostAdapter
-import com.example.sharingphoto.databinding.FragmentFeedBinding
+import com.example.sharingphoto.databinding.FragmentPersonalPostBinding
 import com.example.sharingphoto.model.Comment
 import com.example.sharingphoto.model.Post
-import com.example.sharingphoto.viewmodel.FeedViewModel
+import com.example.sharingphoto.viewmodel.PersonalPostViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.auth.auth
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
-class FeedFragment : Fragment(){
+class PersonalPostFragment : Fragment() {
 
-    private var _binding : FragmentFeedBinding ?= null
+    private var _binding : FragmentPersonalPostBinding ?= null
     private val binding get() = _binding!!
-
-
     private lateinit var auth : FirebaseAuth
-    private lateinit var db : FirebaseFirestore
+    private var postAdapter : PostAdapter ?=null
+    private val postList : ArrayList<Post> = arrayListOf()
 
-    private var postList : ArrayList<Post> = arrayListOf()
-
-    private var postAdapter : PostAdapter ?= null
-
-    private lateinit var viewModel : FeedViewModel
-    private var user  : FirebaseUser ?= null
-
-
+    private lateinit var viewModel : PersonalPostViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
-        db = Firebase.firestore
+        viewModel = ViewModelProvider(this)[PersonalPostViewModel::class.java]
 
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
-        _binding = FragmentFeedBinding.inflate(inflater,container,false)
+
+        _binding = FragmentPersonalPostBinding.inflate(inflater,container,false)
         val view = binding.root
         return view
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this)[FeedViewModel::class.java]
 
-        user = auth.currentUser
-        if(user == null)
-        {
-            val alert = AlertDialog.Builder(requireContext())
-            alert.setTitle("Giriş hatası oluştu")
-            alert.setMessage("Lütfen tekrar giriş yapınız")
-            alert.setPositiveButton("Tamam") {
-                dialog,which ->
-                dialog.dismiss()
-            }
-            alert.show()
-
-            val action = FeedFragmentDirections.actionFeedFragmentToSignInFragment()
-            updateUI(action)
-        }
-
-        else
-        {
+        arguments?.let {
+            val info = PersonalPostFragmentArgs.fromBundle(it).userId
+            postAdapter(info)
             observerLiveData()
-            viewModel.getPosts()
 
-
-            binding.newPostImageView.setOnClickListener {
-                val action = FeedFragmentDirections.actionFeedFragmentToUploadFragment()
-                updateUI(action)
+            lifecycleScope.launch(Dispatchers.IO) {
+                viewModel.getPostByUser(info)
             }
-
-            binding.settingsImageView.setOnClickListener {
-                val action = FeedFragmentDirections.actionFeedFragmentToSettingsFragment()
-                updateUI(action)
-            }
-
-            binding.profileImageView.setOnClickListener {
-                val userId = user?.uid
-                if(userId != null)
-                {
-                    val action = FeedFragmentDirections.actionFeedFragmentToProfileFragment(userId)
-                    updateUI(action)
-                }
-            }
-
-
-            adapter()
         }
-
     }
 
-    private fun adapter()
+
+    private fun postAdapter(info : String)
     {
         val user_id = auth.currentUser?.uid
         postAdapter = PostAdapter(postList,
 
-           recyclerViewVisibility =  {
-               post ->
-               val postId = post.postId
-               val commentList = ArrayList<Comment>()
-               commentList.addAll(post.comment)
-               postAdapter?.showComments(postId!!,commentList)
+            recyclerViewVisibility =  {
+                    post ->
+                val postId = post.postId
+                val commentList = ArrayList<Comment>()
+                commentList.addAll(post.comment)
+                postAdapter?.showComments(postId!!,commentList)
 
-           },
-           onCommentClick =  {
-               comment ->
-               if(comment.user_id == user_id)
-               {
-                   comment.isCommentOwner = true
-               }
+            },
+            onCommentClick =  {
+                    comment ->
+                if(comment.user_id == user_id)
+                {
+                    comment.isCommentOwner = true
+                }
 
-           },
-           postUserId = {
-               post->
-               val postOwnerId = post.user_id
-               if(postOwnerId == user_id)
-               {
-                   post.isOwner = true
-               }
-           },
+            },
+            postUserId = {
+                    post->
+                val postOwnerId = post.user_id
+                if(postOwnerId == user_id)
+                {
+                    post.isOwner = true
+                }
+            },
             sendComment = {
-                post,comment ->
+                          post,comment ->
                 if(comment != "")
                 {
                     viewModel.setComment(post,comment)
@@ -154,11 +112,11 @@ class FeedFragment : Fragment(){
                     Snackbar.make(requireView(),"Yorum alanı boş bırakılamaz!", Snackbar.LENGTH_SHORT).show()
                 }
 
-           },
+            },
 
             updateComment = {
-                comment , post ->
-                viewModel.updateOwnerComment(comment,post)
+                    comment , post ->
+                    viewModel.updateOwnerComment(comment,post)
 
 
             }
@@ -173,7 +131,6 @@ class FeedFragment : Fragment(){
                 if(newComment != "")
                 {
                     viewModel.modifyComment(newComment,comment)
-
                 }
                 else
                 {
@@ -181,7 +138,7 @@ class FeedFragment : Fragment(){
                 }
             }
             , openPopUpPost = {
-                holder,post,view ->
+                    holder,post,view ->
                 val popup = PopupMenu(ContextThemeWrapper(view.context,R.style.PopUpMenuCustom),view)
 
                 popup.menuInflater.inflate(R.menu.post_settings_menu,popup.menu)
@@ -230,12 +187,9 @@ class FeedFragment : Fragment(){
 
                         R.id.savePost ->
                         {
-                            val userId = user?.uid
-                            if(userId != null)
-                            {
-                                viewModel.savePost(post,userId)
+                            val userId = info
+                            viewModel.savePost(post,userId)
 
-                            }
                             true
                         }
 
@@ -260,7 +214,7 @@ class FeedFragment : Fragment(){
 
             },
             openPopUpComment = {
-                holder,comment,view->
+                    holder,comment,view->
                 val popUp = PopupMenu(ContextThemeWrapper(view.context,R.style.PopUpMenuCustom),view)
                 popUp.menuInflater.inflate(R.menu.comment_settings,popUp.menu)
 
@@ -309,65 +263,31 @@ class FeedFragment : Fragment(){
                 popUp.show()
             },
             clickPost = {
-
+                post ->
             },
             clickUsername = {
                 userId ->
-                val action = FeedFragmentDirections.actionFeedFragmentToProfileFragment(userId)
+                val action = PersonalPostFragmentDirections.actionPersonalPostFragmentToProfileFragment(userId)
                 updateUI(action)
             }
 
         )
 
-        binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.feedRecyclerView.adapter = postAdapter
-
-
+        binding.personalRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.personalRecyclerView.adapter = postAdapter
     }
-
-
-    private fun observerLiveData()
-    {
-        viewModel.postLiveData.observe(viewLifecycleOwner) {
-            post ->
-            post?.let {
-                postAdapter?.updateAdapter(post)
-            }
-        }
-
-        viewModel.updatedPostLiveData.observe(viewLifecycleOwner) {
-            it ->
-            postAdapter?.updatePost(it)
-        }
-
-        viewModel.commentLiveData.observe(viewLifecycleOwner) {
-            (postId,comment) ->
-            val lastComment = comment.toMutableList()
-            postAdapter?.showComments(postId,lastComment)
-        }
-
-        viewModel.errorLiveData.observe(viewLifecycleOwner) {
-            error ->
-            if(error != null)
-            {
-                val alert = AlertDialog.Builder(requireContext())
-                alert.setTitle("Bir hata oluştu")
-                alert.setMessage("Bir hata oluştu lütfen tekrar deneyiniz ${error}")
-                alert.setPositiveButton("Tamam") {
-                        dialog,which->
-                    dialog.dismiss()
-                }
-                alert.show()
-            }
-        }
-
-
-    }
-
 
     private fun updateUI(action : NavDirections)
     {
         findNavController().navigate(action)
+    }
+
+    private fun observerLiveData()
+    {
+        viewModel.personalProfileLiveData.observe(viewLifecycleOwner) {
+            postList ->
+            postAdapter?.updateAdapter(postList)
+        }
     }
 
 

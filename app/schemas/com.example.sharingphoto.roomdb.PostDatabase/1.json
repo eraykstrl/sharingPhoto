@@ -1,0 +1,112 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "b740c0790d2040321da3cfac316c8b33",
+    "entities": [
+      {
+        "tableName": "Post",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`postId` TEXT, `userComment` TEXT, `comment` TEXT NOT NULL, `downloadUrl` TEXT, `likeCounter` INTEGER NOT NULL, `commentCounter` INTEGER NOT NULL, `sendNumber` INTEGER, `user_id` TEXT, `username` TEXT, `likes` TEXT NOT NULL, `isOwner` INTEGER NOT NULL, `postDate` TEXT, `isLiked` INTEGER NOT NULL, `savedPostId` TEXT NOT NULL, PRIMARY KEY(`postId`))",
+        "fields": [
+          {
+            "fieldPath": "postId",
+            "columnName": "postId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "userComment",
+            "columnName": "userComment",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "comment",
+            "columnName": "comment",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "downloadUrl",
+            "columnName": "downloadUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "likeCounter",
+            "columnName": "likeCounter",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "commentCounter",
+            "columnName": "commentCounter",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sendNumber",
+            "columnName": "sendNumber",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user_id",
+            "columnName": "user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "likes",
+            "columnName": "likes",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isOwner",
+            "columnName": "isOwner",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "postDate",
+            "columnName": "postDate",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isLiked",
+            "columnName": "isLiked",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "savedPostId",
+            "columnName": "savedPostId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "postId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b740c0790d2040321da3cfac316c8b33')"
+    ]
+  }
+}
