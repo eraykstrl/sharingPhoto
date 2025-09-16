@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sharingphoto.R
 import com.example.sharingphoto.adapter.UserFollowersAdapter
@@ -67,6 +68,11 @@ class UserFollowingFragment : Fragment() {
                     }
                     getAdapter()
                     observerLiveData()
+
+                    binding.backIcon.setOnClickListener {
+                        val action = UserFollowingFragmentDirections.actionUserFollowingFragmentToProfileFragment(info!!)
+                        findNavController().navigate(action)
+                    }
                 }
             }
         }

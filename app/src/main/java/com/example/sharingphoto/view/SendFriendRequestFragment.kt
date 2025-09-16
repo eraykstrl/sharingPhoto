@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sharingphoto.R
 import com.example.sharingphoto.adapter.SendRequestAdapter
@@ -50,6 +51,11 @@ class SendFriendRequestFragment : Fragment() {
         getAdapter()
         viewModel.getAllUser()
         observerLiveData()
+
+        binding.backIcon.setOnClickListener {
+            val action = SendFriendRequestFragmentDirections.actionSendFriendRequestFragmentToSettingsFragment()
+            findNavController().navigate(action)
+        }
     }
 
     private fun getAdapter()

@@ -250,6 +250,9 @@
         <action
             android:id="@+id/action_sendFriendRequestFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_sendFriendRequestFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/friendRequestFragment"
@@ -259,6 +262,9 @@
         <action
             android:id="@+id/action_friendRequestFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_friendRequestFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/showYourRequestFragment"
@@ -268,6 +274,9 @@
         <action
             android:id="@+id/action_showYourRequestFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_showYourRequestFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/userFollowersFragment"
@@ -276,6 +285,9 @@
         tools:layout="@layout/fragment_user_followers" >
         <argument android:name="userid"
             app:argType="string" />
+        <action
+            android:id="@+id/action_userFollowersFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/userFollowingFragment"
@@ -285,6 +297,9 @@
         <argument
             android:name="userid"
             app:argType="string" />
+        <action
+            android:id="@+id/action_userFollowingFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/accountSettingsFragment2"
@@ -378,9 +393,6 @@
         <action
             android:id="@+id/action_videoProfileFragment_to_userFollowingFragment"
             app:destination="@id/userFollowingFragment" />
-        <action
-            android:id="@+id/action_videoProfileFragment_to_userFollowersFragment"
-            app:destination="@id/userFollowersFragment" />
     </fragment>
     <fragment
         android:id="@+id/savedPostsFragment"
