@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.ProfileFragment"
+    android:background="@color/white"
+    android:id="@+id/swipeRefreshLayout"
+    >
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     >
 
@@ -52,14 +59,15 @@
                 android:id="@+id/followerNumberTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Deneme"
                 android:textSize="15sp"
                 android:textStyle="bold"
+                android:text="0"
                 />
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/followingOperationsLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -70,7 +78,7 @@
                 android:id="@+id/followingTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:text="Takip Edenler"
+                android:text="Takip Edilenler"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:gravity="center_vertical"
@@ -80,9 +88,9 @@
                 android:id="@+id/followingNumberTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Deneme"
                 android:textSize="15sp"
                 android:textStyle="bold"
+                android:text="0"
                 />
 
         </LinearLayout>
@@ -92,12 +100,28 @@
 
     </LinearLayout>
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/followButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Takip Et"
+        app:layout_constraintTop_toBottomOf="@+id/topInfoLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="5dp"
+        android:textAllCaps="false"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:background="@drawable/button_border"
+        android:textColor="@color/amber_custom"
+        />
+
     <TextView
         android:id="@+id/nameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topInfoLayout"
+        app:layout_constraintTop_toBottomOf="@+id/followButton"
         android:layout_marginTop="30dp"
         android:textStyle="bold"
         android:textSize="20sp"
@@ -105,9 +129,9 @@
         android:layout_marginStart="30dp"
         />
     <TextView
-        android:id="@+id/aboutTextView"
+        android:id="@+id/aboutEditText"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="30dp"
         app:layout_constraintTop_toBottomOf="@+id/nameTextView"
@@ -116,20 +140,74 @@
         android:textSize="15sp"
         android:gravity="center"
         android:textColor="@color/black"
-        android:text="Henüz bir tanıtım yazısı bulunmuyor"
+        android:visibility="visible"
+        android:inputType="textMultiLine"
+        android:enabled="false"
+        android:background="@null"
+        android:text="Merhaba LafSal!"
         />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/profileRecyclerView"
+
+    <ImageView
+        android:id="@+id/lockImageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/aboutTextView"
+        app:layout_constraintTop_toBottomOf="@+id/middleLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/navBottomLayout"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="30dp"
+        android:src="@drawable/lock_icon"
+        android:visibility="gone"
         />
+
+    <LinearLayout
+        android:id="@+id/middleLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/aboutEditText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="10dp"
+        >
+        <ImageView
+            android:id="@+id/imagesImageView"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:src="@drawable/upload_photo_icon"
+            android:layout_weight="1"
+            />
+        <ImageView
+            android:id="@+id/videosImageView"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:src="@drawable/video_icon"
+            android:layout_weight="1"
+            />
+
+        <ImageView
+            android:id="@+id/otherImageView"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:src="@drawable/upload_file_icon"
+            android:layout_weight="1"
+            />
+
+
+    </LinearLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/profileRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@+id/middleLayout"
+            app:layout_constraintBottom_toTopOf="@id/navBottomLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
 
     <LinearLayout
         android:id="@+id/navBottomLayout"
@@ -196,4 +274,26 @@
 
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/errorTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -20,10 +20,13 @@ data class User(
     val securityNotification: Boolean? = null,
     val followingNotification: Boolean? = null,
     val friends: List<String>? = null,
-    val follower: List<User> = emptyList(),
-    val following: List<User> = emptyList(),
-    val followRequest: List<User> = emptyList(),
-    val savedPost: List<String>? = null
+    val follower: List<String> = emptyList(),
+    val following: List<String> = emptyList(),
+    val followerRequest: List<String> = emptyList(),
+    val followingRequest : List<String> = emptyList(),
+    val savedPost: List<String>? = null,
+    val aboutUser : String ?= null,
+    val isPrivate : Boolean ?= null
 )
 
 

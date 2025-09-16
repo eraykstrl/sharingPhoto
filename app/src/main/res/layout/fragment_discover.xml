@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.DiscoverFragment"
+    android:background="#CFD8DC"
+    >
+
+    <LinearLayout
+        android:id="@+id/searchingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="30dp"
+        >
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/searchInputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Ara..."
+                android:inputType="text"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/searchingRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:background="@color/white"
+        android:elevation="4dp"
+        android:clipToPadding="false"
+        android:padding="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchingLayout"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:visibility="gone"
+        />
+
+
+    <LinearLayout
+        android:id="@+id/upNavLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintTop_toBottomOf="@id/searchingLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/white"
+        >
+
+        <TextView
+            android:id="@+id/following"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Takip Edilenler"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/discover"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Keşfet"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/discoverRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="60dp"
+        app:layout_constraintTop_toBottomOf="@id/upNavLayout"
+        app:layout_constraintBottom_toBottomOf="@id/navBottomLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="5dp"
+
+        />
+
+    <LinearLayout
+        android:id="@+id/navBottomLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        >
+
+        <ImageView
+            android:id="@+id/homePageImageView"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/homepage_icon"
+            android:layout_weight="1"
+            />
+
+        <ImageView
+            android:id="@+id/newPostImageView"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/new_post_icon"
+            android:layout_weight="1"
+            />
+
+
+        <ImageView
+            android:id="@+id/messageImageView"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/message_icon"
+            android:layout_weight="1"
+
+            />
+
+        <ImageView
+            android:id="@+id/profileImageView"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/profile_icon"
+            android:layout_weight="1"
+
+            />
+        <ImageView
+            android:id="@+id/settingsImageView"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/settings_icon"
+            android:layout_weight="1"
+
+            />
+
+
+    </LinearLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

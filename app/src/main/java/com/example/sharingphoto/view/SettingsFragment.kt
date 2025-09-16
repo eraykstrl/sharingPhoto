@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.example.sharingphoto.databinding.FragmentSettingsBinding
@@ -14,11 +15,14 @@ import com.example.sharingphoto.viewmodel.SettingsViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.storage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class SettingsFragment : Fragment() {
@@ -30,6 +34,10 @@ class SettingsFragment : Fragment() {
     private lateinit var auth : FirebaseAuth
     private lateinit var firestore : FirebaseFirestore
     private lateinit var storage : FirebaseStorage
+
+    private var currentUser : FirebaseUser ?= null
+    private var currentUserId : String ?= null
+    private var currentEmail : String ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,10 +64,12 @@ class SettingsFragment : Fragment() {
 
         viewModel = ViewModelProvider(this)[SettingsViewModel::class.java]
 
-        val currentUser = auth.currentUser
-        val currentEmail = currentUser?.email
+        currentUser = auth.currentUser
 
-        if (currentUser != null) {
+        if (currentUser != null)
+        {
+            currentEmail = currentUser?.email
+            currentUserId = currentUser?.uid
             binding.emailTextView.text = currentEmail.toString()
 
             binding.logOutTextView.setOnClickListener {
@@ -109,28 +119,10 @@ class SettingsFragment : Fragment() {
                 alert.setMessage("Hesabı silmek istediğinize gerçekten emin misiniz eğer hesabınızı silerseniz tekrar geri alamazsınız!!")
                 alert.setPositiveButton("Tamam") { dialog, which ->
                     it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
-                    currentUser.delete()
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                val alert = AlertDialog.Builder(requireContext())
-                                alert.setMessage("Gittiğinize çok üzgünüz sizi tekrar bekliyoru<")
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        viewModel.deleteAllInfo(currentUserId!!)
+                    }
 
-                                val action =
-                                    SettingsFragmentDirections.actionSettingsFragmentToSignInFragment()
-                                updateUI(action)
-                                alert.show()
-
-                            } else {
-                                val alert = AlertDialog.Builder(requireContext())
-                                alert.setTitle("Hata Oluştu")
-                                alert.setMessage("Hesabı silerken bir hata oluştu lütfen tekrar deneyiniz")
-                                alert.setPositiveButton("Tamam") { dialog, which ->
-                                    dialog.dismiss()
-                                }
-
-                                alert.show()
-                            }
-                        }
 
                 }
 
@@ -152,8 +144,38 @@ class SettingsFragment : Fragment() {
                 val action = SettingsFragmentDirections.actionSettingsFragmentToQuestionFragment()
                 updateUI(action)
             }
+            binding.newFriendTextView.setOnClickListener {
+                val action = SettingsFragmentDirections.actionSettingsFragmentToSendFriendRequestFragment()
+                updateUI(action)
+            }
 
-        } else {
+            binding.followerRequest.setOnClickListener {
+                val action = SettingsFragmentDirections.actionSettingsFragmentToFriendRequestFragment()
+                updateUI(action)
+            }
+
+            binding.sentFollowRequest.setOnClickListener {
+                val action = SettingsFragmentDirections.actionSettingsFragmentToShowYourRequestFragment()
+                updateUI(action)
+            }
+            binding.profileImageView.setOnClickListener {
+                val action = SettingsFragmentDirections.actionSettingsFragmentToProfileFragment(currentUserId!!)
+                updateUI(action)
+            }
+
+            binding.accountSettingsTextView.setOnClickListener {
+                val action = SettingsFragmentDirections.actionSettingsFragmentToAccountSettingsFragment2()
+                updateUI(action)
+            }
+
+            binding.savedPost.setOnClickListener {
+                val action = SettingsFragmentDirections.actionSettingsFragmentToSavedPostsFragment()
+                updateUI(action)
+            }
+
+        }
+        else
+        {
             val alert = AlertDialog.Builder(requireContext())
             alert.setTitle("Giriş hatası oluştu")
             alert.setMessage("Lütfen tekrar giriş yapınız")
@@ -167,28 +189,12 @@ class SettingsFragment : Fragment() {
 
         }
 
+
+
     }
 
     private fun observerLiveData()
     {
-        viewModel.photoLiveData.observe(viewLifecycleOwner) {
-            result->
-            if(result == "success")
-            {
-                println("başarılı")
-            }
-            else
-            {
-                val alert = AlertDialog.Builder(requireContext())
-                alert.setTitle("Hata oluştu")
-                alert.setMessage(result.toString())
-                alert.setPositiveButton("Tamam") {
-                    dialog,which->
-                    dialog.dismiss()
-                }
-                alert.show()
-            }
-        }
 
         viewModel.logOutLiveData.observe(viewLifecycleOwner) {
             result->
@@ -199,33 +205,32 @@ class SettingsFragment : Fragment() {
             }
         }
 
-        viewModel.userFirstCharacterLiveData.observe(viewLifecycleOwner) {
-            result->
-            if(result !=1)
+        viewModel.deleteLiveData.observe(viewLifecycleOwner) {
+            result ->
+            if(result)
             {
-                Snackbar.make(requireView(),"Ad, soyad bilgisi alınamıyor " +
-                        "${result.toString()}", Snackbar.LENGTH_SHORT).show()
-            }
+                currentUser?.delete()
+                    ?.addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val alert = AlertDialog.Builder(requireContext())
+                            alert.setMessage("Gittiğinize çok üzgünüz sizi tekrar bekliyoru<")
 
+                            val action =
+                                SettingsFragmentDirections.actionSettingsFragmentToSignInFragment()
+                            updateUI(action)
+                            alert.show()
 
-        }
+                        } else {
+                            val alert = AlertDialog.Builder(requireContext())
+                            alert.setTitle("Hata Oluştu")
+                            alert.setMessage("Hesabı silerken bir hata oluştu lütfen tekrar deneyiniz")
+                            alert.setPositiveButton("Tamam") { dialog, which ->
+                                dialog.dismiss()
+                            }
 
-        viewModel.profilePhotoLiveData.observe(viewLifecycleOwner) {
-            result->
-            if(result != true || result != false)
-            {
-                Snackbar.make(requireView(),"Profil fotoğrafı bilgisi alınamıyor " +
-                        "${result.toString()}", Snackbar.LENGTH_SHORT).show()
-            }
-
-        }
-
-        viewModel.getDownloadUrlLiveData.observe(viewLifecycleOwner) {
-            result->
-            if(result != 1)
-            {
-                Snackbar.make(requireView(),"Ad, soyad bilgisi alınamıyor " +
-                        "${result.toString()}", Snackbar.LENGTH_SHORT).show()
+                            alert.show()
+                        }
+                    }
             }
 
         }

@@ -2,13 +2,16 @@ package com.example.sharingphoto.view
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.ContextThemeWrapper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
@@ -26,6 +29,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
+import java.io.File
 
 
 class FeedFragment : Fragment(){
@@ -36,6 +42,7 @@ class FeedFragment : Fragment(){
 
     private lateinit var auth : FirebaseAuth
     private lateinit var db : FirebaseFirestore
+    private lateinit var storage : FirebaseStorage
 
     private var postList : ArrayList<Post> = arrayListOf()
 
@@ -43,6 +50,7 @@ class FeedFragment : Fragment(){
 
     private lateinit var viewModel : FeedViewModel
     private var user  : FirebaseUser ?= null
+    private var currentUserId : String ?= null
 
 
 
@@ -50,6 +58,7 @@ class FeedFragment : Fragment(){
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
         db = Firebase.firestore
+        storage = Firebase.storage
 
     }
 
@@ -64,7 +73,8 @@ class FeedFragment : Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.following.setTextColor(Color.BLACK)
+        binding.discover.setTextColor(Color.GRAY)
         viewModel = ViewModelProvider(this)[FeedViewModel::class.java]
 
         user = auth.currentUser
@@ -85,8 +95,9 @@ class FeedFragment : Fragment(){
 
         else
         {
+            currentUserId = user?.uid
+            viewModel.getPosts(currentUserId!!)
             observerLiveData()
-            viewModel.getPosts()
 
 
             binding.newPostImageView.setOnClickListener {
@@ -100,12 +111,16 @@ class FeedFragment : Fragment(){
             }
 
             binding.profileImageView.setOnClickListener {
-                val userId = user?.uid
-                if(userId != null)
+                if(currentUserId != null)
                 {
-                    val action = FeedFragmentDirections.actionFeedFragmentToProfileFragment(userId)
+                    val action = FeedFragmentDirections.actionFeedFragmentToProfileFragment(currentUserId!!)
                     updateUI(action)
                 }
+            }
+
+            binding.discover.setOnClickListener {
+                val action = FeedFragmentDirections.actionFeedFragmentToDiscoverFragment2()
+                updateUI(action)
             }
 
 
@@ -116,7 +131,6 @@ class FeedFragment : Fragment(){
 
     private fun adapter()
     {
-        val user_id = auth.currentUser?.uid
         postAdapter = PostAdapter(postList,
 
            recyclerViewVisibility =  {
@@ -129,7 +143,7 @@ class FeedFragment : Fragment(){
            },
            onCommentClick =  {
                comment ->
-               if(comment.user_id == user_id)
+               if(comment.user_id == currentUserId)
                {
                    comment.isCommentOwner = true
                }
@@ -138,7 +152,7 @@ class FeedFragment : Fragment(){
            postUserId = {
                post->
                val postOwnerId = post.user_id
-               if(postOwnerId == user_id)
+               if(postOwnerId == currentUserId)
                {
                    post.isOwner = true
                }
@@ -164,8 +178,7 @@ class FeedFragment : Fragment(){
             }
             , updateLike = {
                 post,info ->
-                val userId = auth.currentUser?.uid
-                viewModel.updateLike(post,info,userId!!)
+                viewModel.updateLike(post,info,currentUserId!!)
 
             },
             modifyComment = {
@@ -180,85 +193,190 @@ class FeedFragment : Fragment(){
                     Snackbar.make(requireView(),"Yorum alanı boş bırakılamaz!", Snackbar.LENGTH_SHORT).show()
                 }
             }
-            , openPopUpPost = {
-                holder,post,view ->
-                val popup = PopupMenu(ContextThemeWrapper(view.context,R.style.PopUpMenuCustom),view)
+            , openPopUpPost = { holder, post, view ->
 
-                popup.menuInflater.inflate(R.menu.post_settings_menu,popup.menu)
-                if(post.isOwner)
-                {
-                    popup.menu.findItem(R.id.deletePostItem).isVisible = true
-                    popup.menu.findItem(R.id.reportPostItem).isVisible = true
-                    popup.menu.findItem(R.id.sharePost).isVisible = true
-                    popup.menu.findItem(R.id.modifyPost).isVisible = true
-                    popup.menu.findItem(R.id.savePost).isVisible = true
-                }
+                    val popup = PopupMenu(ContextThemeWrapper(view.context, R.style.PopUpMenuCustom), view)
+                    popup.menuInflater.inflate(R.menu.post_settings_menu, popup.menu)
 
-                else
-                {
-                    popup.menu.findItem(R.id.deletePostItem).isVisible = false
-                    popup.menu.findItem(R.id.reportPostItem).isVisible = true
-                    popup.menu.findItem(R.id.sharePost).isVisible = true
-                    popup.menu.findItem(R.id.modifyPost).isVisible = false
-                    popup.menu.findItem(R.id.savePost).isVisible = true
-                }
-
-
-                popup.setOnMenuItemClickListener {
-                        item ->
-                    when(item.itemId)
-                    {
-                        R.id.modifyPost -> {
-                            holder.binding.savePostModify.visibility = View.VISIBLE
-                            holder.binding.postOwnerComment.isEnabled = true
-                            holder.binding.postOwnerComment.setSelection(holder.binding.postOwnerComment.text.length)
-                            holder.binding.postOwnerComment.requestFocus()
-                            true
-                        }
-
-                        R.id.sharePost -> {
-                            val context = holder.itemView.context
-                            val postLink = "https://github.com/eraykstrl?tab=repositories"
-                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                type = "text/plain"
-                                putExtra(Intent.EXTRA_SUBJECT,"Paylaşmak istediğiniz gönderi")
-                                putExtra(Intent.EXTRA_TEXT,postLink)
-                            }
-                            context.startActivity(Intent.createChooser(shareIntent,"Gönderiyi paylaş"))
-                            true
-                        }
-
-                        R.id.savePost ->
-                        {
-                            val userId = user?.uid
-                            if(userId != null)
-                            {
-                                viewModel.savePost(post,userId)
-
-                            }
-                            true
-                        }
-
-                        R.id.deletePostItem -> {
-                            viewModel.deletePost(post)
-                            true
-                        }
-
-                        R.id.reportPostItem -> {
-                            true
-                        }
-
-                        else ->
-                        {
-                            false
-                        }
+                    if(post.isOwner) {
+                        popup.menu.findItem(R.id.deletePostItem).isVisible = true
+                        popup.menu.findItem(R.id.reportPostItem).isVisible = true
+                        popup.menu.findItem(R.id.sharePost).isVisible = true
+                        popup.menu.findItem(R.id.modifyPost).isVisible = true
+                        popup.menu.findItem(R.id.savePost).isVisible = true
+                    } else {
+                        popup.menu.findItem(R.id.deletePostItem).isVisible = false
+                        popup.menu.findItem(R.id.reportPostItem).isVisible = true
+                        popup.menu.findItem(R.id.sharePost).isVisible = true
+                        popup.menu.findItem(R.id.modifyPost).isVisible = false
+                        popup.menu.findItem(R.id.savePost).isVisible = true
                     }
-                }
 
+                    when(holder)
+                    {
+                        is PostAdapter.PostHolder.ImageHolder -> {
+                            val b = holder.binding
+                            popup.setOnMenuItemClickListener { item ->
+                                when (item.itemId) {
+                                    R.id.modifyPost -> {
+                                        b.savePostModify.visibility = View.VISIBLE
+                                        b.postOwnerComment.isEnabled = true
+                                        b.postOwnerComment.setSelection(b.postOwnerComment.text.length)
+                                        b.postOwnerComment.requestFocus()
+                                        true
+                                    }
 
-                popup.show()
+                                    R.id.sharePost -> {
+                                        val context = holder.itemView.context
+                                        val postLink =
+                                            "https://github.com/eraykstrl?tab=repositories"
+                                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                            type = "text/plain"
+                                            putExtra(
+                                                Intent.EXTRA_SUBJECT,
+                                                "Paylaşmak istediğiniz gönderi"
+                                            )
+                                            putExtra(Intent.EXTRA_TEXT, postLink)
+                                        }
+                                        context.startActivity(
+                                            Intent.createChooser(
+                                                shareIntent,
+                                                "Gönderiyi paylaş"
+                                            )
+                                        )
+                                        true
+                                    }
 
-            },
+                                    R.id.savePost -> {
+                                        viewModel.savePost(post, currentUserId!!)
+                                        true
+                                    }
+
+                                    R.id.deletePostItem -> {
+                                        viewModel.deletePost(post)
+                                        true
+                                    }
+
+                                    R.id.reportPostItem -> true
+                                    else -> false
+                                }
+                            }
+                        }
+
+                        is PostAdapter.PostHolder.VideoHolder -> {
+                            val b = holder.binding
+                            popup.setOnMenuItemClickListener { item ->
+                                when(item.itemId) {
+                                    R.id.modifyPost -> {
+                                        b.savePostModify.visibility = View.VISIBLE
+                                        b.postOwnerComment.isEnabled = true
+                                        b.postOwnerComment.setSelection(b.postOwnerComment.text.length)
+                                        b.postOwnerComment.requestFocus()
+                                        true
+                                    }
+                                    R.id.sharePost -> {
+                                        val context = holder.itemView.context
+                                        val postLink = "https://github.com/eraykstrl?tab=repositories"
+                                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                            type = "text/plain"
+                                            putExtra(Intent.EXTRA_SUBJECT,"Paylaşmak istediğiniz gönderi")
+                                            putExtra(Intent.EXTRA_TEXT, postLink)
+                                        }
+                                        context.startActivity(Intent.createChooser(shareIntent,"Gönderiyi paylaş"))
+                                        true
+                                    }
+                                    R.id.savePost -> {
+                                        viewModel.savePost(post, currentUserId!!)
+                                        true
+                                    }
+                                    R.id.deletePostItem -> {
+                                        println("buradayiz aslinda silinmesi lazim")
+                                        viewModel.deletePost(post)
+                                        true
+                                    }
+                                    R.id.reportPostItem -> true
+                                    else -> false
+                                }
+                            }
+                        }
+
+                        is PostAdapter.PostHolder.TextHolder -> {
+                            val b = holder.binding
+                            popup.setOnMenuItemClickListener { item ->
+                                when(item.itemId) {
+                                    R.id.modifyPost -> {
+                                        b.savePostModify.visibility = View.VISIBLE
+                                        b.postOwnerComment.isEnabled = true
+                                        b.postOwnerComment.setSelection(b.postOwnerComment.text.length)
+                                        b.postOwnerComment.requestFocus()
+                                        true
+                                    }
+                                    R.id.sharePost -> {
+                                        val context = holder.itemView.context
+                                        val postLink = "https://github.com/eraykstrl?tab=repositories"
+                                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                            type = "text/plain"
+                                            putExtra(Intent.EXTRA_SUBJECT,"Paylaşmak istediğiniz gönderi")
+                                            putExtra(Intent.EXTRA_TEXT, postLink)
+                                        }
+                                        context.startActivity(Intent.createChooser(shareIntent,"Gönderiyi paylaş"))
+                                        true
+                                    }
+                                    R.id.savePost -> {
+                                        viewModel.savePost(post, currentUserId!!)
+                                        true
+                                    }
+                                    R.id.deletePostItem -> {
+                                        viewModel.deletePost(post)
+                                        true
+                                    }
+                                    R.id.reportPostItem -> true
+                                    else -> false
+                                }
+                            }
+                        }
+
+                        is PostAdapter.PostHolder.FileHolder -> {
+                            val b = holder.binding
+                            popup.setOnMenuItemClickListener { item ->
+                                when(item.itemId) {
+                                    R.id.modifyPost -> {
+                                        b.savePostModify.visibility = View.VISIBLE
+                                        b.postOwnerComment.isEnabled = true
+                                        b.postOwnerComment.setSelection(b.postOwnerComment.text.length)
+                                        b.postOwnerComment.requestFocus()
+                                        true
+                                    }
+                                    R.id.sharePost -> {
+                                        val context = holder.itemView.context
+                                        val postLink = "https://github.com/eraykstrl?tab=repositories"
+                                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                            type = "text/plain"
+                                            putExtra(Intent.EXTRA_SUBJECT,"Paylaşmak istediğiniz gönderi")
+                                            putExtra(Intent.EXTRA_TEXT, postLink)
+                                        }
+                                        context.startActivity(Intent.createChooser(shareIntent,"Gönderiyi paylaş"))
+                                        true
+                                    }
+                                    R.id.savePost -> {
+                                        viewModel.savePost(post, currentUserId!!)
+                                        true
+                                    }
+                                    R.id.deletePostItem -> {
+                                        viewModel.deletePost(post)
+                                        true
+                                    }
+                                    R.id.reportPostItem -> true
+                                    else -> false
+                                }
+                            }
+                        }
+
+                    }
+                        popup.show()
+
+                    },
+
             openPopUpComment = {
                 holder,comment,view->
                 val popUp = PopupMenu(ContextThemeWrapper(view.context,R.style.PopUpMenuCustom),view)
@@ -315,6 +433,28 @@ class FeedFragment : Fragment(){
                 userId ->
                 val action = FeedFragmentDirections.actionFeedFragmentToProfileFragment(userId)
                 updateUI(action)
+            },
+            fileClicked = {
+                fileName,fileUrl ->
+                val localFile = File(requireContext().cacheDir,fileName)
+                println("file name $fileName")
+                val storageRef = storage.getReferenceFromUrl(fileUrl)
+                storageRef.getFile(localFile).addOnSuccessListener {
+                    val uri = FileProvider.getUriForFile(requireContext(),"${requireContext().packageName}.fileProvider",localFile)
+
+                    val mimeType = requireContext().contentResolver.getType(uri)
+                        ?: MimeTypeMap.getSingleton()
+                            .getMimeTypeFromExtension(localFile.extension.lowercase())
+                        ?: "application/octet-stream"
+
+                    val intent = Intent(Intent.ACTION_VIEW).apply {
+                        setDataAndType(uri,mimeType)
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+
+                    requireContext().startActivity(intent)
+                }
+
             }
 
         )
@@ -330,8 +470,15 @@ class FeedFragment : Fragment(){
     {
         viewModel.postLiveData.observe(viewLifecycleOwner) {
             post ->
-            post?.let {
-                postAdapter?.updateAdapter(post)
+            postAdapter?.updateAdapter(post)
+
+            if(post.isNotEmpty())
+            {
+                binding.infoTextView.visibility = View.GONE
+            }
+            else
+            {
+                binding.infoTextView.visibility = View.VISIBLE
             }
         }
 

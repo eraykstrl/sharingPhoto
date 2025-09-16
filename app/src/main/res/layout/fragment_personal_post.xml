@@ -5,87 +5,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.FeedFragment"
-    android:background="#CFD8DC"
+    tools:context=".view.PersonalPostFragment"
+    android:background="@color/white"
     >
 
+    <ImageView
+        android:id="@+id/backIcon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/arrow_back"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="30dp"
+        android:elevation="10dp"
+    />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/personalRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/navBottomLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="60dp"
         />
 
-
-    <LinearLayout
-        android:id="@+id/navBottomLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:orientation="horizontal"
-        android:background="@color/white"
-        >
-
-        <ImageView
-            android:id="@+id/homePageImageView"
-            android:paddingTop="7dp"
-            android:paddingBottom="7dp"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/homepage_icon"
-            android:layout_weight="1"
-            />
-
-        <ImageView
-            android:id="@+id/newPostImageView"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/new_post_icon"
-            android:layout_weight="1"
-            />
-
-
-        <ImageView
-            android:id="@+id/messageImageView"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/message_icon"
-            android:layout_weight="1"
-
-            />
-
-        <ImageView
-            android:id="@+id/profileImageView"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/profile_icon"
-            android:layout_weight="1"
-
-            />
-        <ImageView
-            android:id="@+id/settingsImageView"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/settings_icon"
-            android:layout_weight="1"
-
-            />
-
-
-    </LinearLayout>
 
 
 

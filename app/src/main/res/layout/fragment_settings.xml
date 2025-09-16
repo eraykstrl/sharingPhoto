@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -8,12 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.SettingsFragment"
+    android:background="@drawable/background_design"
 
     >
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#CFD8DC"
         android:contentDescription="For Scroll"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,13 +52,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/settingsTextView"
                 android:textSize="24sp"
-                android:background="@drawable/button_border"
+                android:background="@drawable/cards_border"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:padding="10dp"
-                android:textColor="#FFF59D"
+                android:textColor="@color/black"
                 android:gravity="center"
                 />
+
 
             <TextView
                 android:id="@+id/newPasswordTextView"
@@ -71,7 +70,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/emailTextView"
                 android:textSize="24sp"
-                android:background="@drawable/button_border"
+                android:background="@drawable/cards_border"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:text="Şifrenizi Yenileyin"
@@ -79,7 +78,75 @@
                 android:focusable="true"
                 android:clickable="true"
                 android:padding="10dp"
-                android:textColor="#FFF59D"
+                android:textColor="@color/burgundy"
+                android:textStyle="bold"
+
+                />
+            <TextView
+                android:id="@+id/followerRequest"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/newPasswordTextView"
+                android:textSize="24sp"
+                android:background="@drawable/cards_border"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="Takip İstekleri"
+                android:gravity="center"
+                android:focusable="true"
+                android:clickable="true"
+                android:padding="10dp"
+                android:textColor="@color/burgundy"
+                android:textStyle="bold"
+
+                />
+
+
+            <TextView
+                android:id="@+id/newFriendTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/followerRequest"
+                android:textSize="24sp"
+                android:background="@drawable/cards_border"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="Ağınızı Genişletin"
+                android:gravity="center"
+                android:focusable="true"
+                android:clickable="true"
+                android:padding="10dp"
+                android:textColor="@color/burgundy"
+                android:textStyle="bold"
+
+                />
+
+
+            <TextView
+                android:id="@+id/sentFollowRequest"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/newFriendTextView"
+                android:textSize="24sp"
+                android:background="@drawable/cards_border"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="Gönderdiğiniz İstekler"
+                android:gravity="center"
+                android:focusable="true"
+                android:clickable="true"
+                android:padding="10dp"
+                android:textColor="@color/burgundy"
+                android:textStyle="bold"
 
                 />
 
@@ -90,9 +157,9 @@
                 android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/newPasswordTextView"
+                app:layout_constraintTop_toBottomOf="@+id/sentFollowRequest"
                 android:textSize="24sp"
-                android:background="@drawable/button_border"
+                android:background="@drawable/cards_border"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:text="Hakkımızda"
@@ -100,7 +167,8 @@
                 android:focusable="true"
                 android:clickable="true"
                 android:padding="10dp"
-                android:textColor="#FFF59D"
+                android:textColor="@color/burgundy"
+                android:textStyle="bold"
                 />
 
             <TextView
@@ -112,7 +180,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/aboutUsTextView"
                 android:textSize="24sp"
-                android:background="@drawable/button_border"
+                android:background="@drawable/cards_border"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:text="E-posta Doğrula"
@@ -120,9 +188,33 @@
                 android:focusable="true"
                 android:clickable="true"
                 android:padding="10dp"
-                android:textColor="#FFF59D"
+                android:textColor="@color/burgundy"
+                android:textStyle="bold"
 
                 />
+
+            <TextView
+                android:id="@+id/accountSettingsTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/verifyEmailTextView"
+                android:textSize="24sp"
+                android:background="@drawable/cards_border"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="Hesap Ayarları"
+                android:gravity="center"
+                android:focusable="true"
+                android:clickable="true"
+                android:padding="10dp"
+                android:textColor="@color/burgundy"
+                android:textStyle="bold"
+
+                />
+
 
             <TextView
                 android:id="@+id/frequentlyQuestionsTextView"
@@ -131,9 +223,9 @@
                 android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/verifyEmailTextView"
+                app:layout_constraintTop_toBottomOf="@+id/accountSettingsTextView"
                 android:textSize="24sp"
-                android:background="@drawable/button_border"
+                android:background="@drawable/cards_border"
 
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
@@ -142,7 +234,30 @@
                 android:focusable="true"
                 android:clickable="true"
                 android:padding="10dp"
-                android:textColor="#FFF59D"
+                android:textColor="@color/burgundy"
+                android:textStyle="bold"
+
+                />
+
+            <TextView
+                android:id="@+id/savedPost"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/frequentlyQuestionsTextView"
+                android:textSize="24sp"
+                android:background="@drawable/cards_border"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="Kaydedilen Gönderiler"
+                android:gravity="center"
+                android:focusable="true"
+                android:clickable="true"
+                android:padding="10dp"
+                android:textColor="@color/burgundy"
+                android:textStyle="bold"
 
                 />
 
@@ -153,10 +268,10 @@
                 android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/frequentlyQuestionsTextView"
+                app:layout_constraintTop_toBottomOf="@+id/savedPost"
                 app:layout_constraintBottom_toTopOf="@+id/deleteAccountTextView"
                 android:textSize="24sp"
-                android:background="@drawable/button_border"
+                android:background="@drawable/cards_border"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:text="Bildirim Ayarları"
@@ -165,7 +280,8 @@
                 android:clickable="true"
                 android:padding="10dp"
                 android:layout_marginBottom="20dp"
-                android:textColor="#FFF59D"
+                android:textColor="@color/burgundy"
+                android:textStyle="bold"
 
                 />
 
@@ -176,7 +292,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
-                android:background="@drawable/button_border"
+                android:background="@drawable/cards_border"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
@@ -186,7 +302,8 @@
                 app:layout_constraintTop_toBottomOf="@+id/notificationTextView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:textColor="#FFF59D"
+                android:textColor="@color/burgundy"
+                android:textStyle="bold"
 
 
                 />
@@ -199,13 +316,14 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="20dp"
-                android:background="@drawable/button_border"
+                android:background="@drawable/cards_border"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="Bize Ulaşın"
-                android:textColor="#FFF59D"
+                android:textColor="@color/burgundy"
+                android:textStyle="bold"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -219,7 +337,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                android:background="@drawable/button_border"
+                android:background="@drawable/cards_border"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
@@ -230,10 +348,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginBottom="20dp"
-                android:textColor="#FFF59D"
                 android:layout_marginTop="20dp"
 
-
+                android:textColor="@color/burgundy"
+                android:textStyle="bold"
                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

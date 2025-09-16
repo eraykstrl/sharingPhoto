@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/fileNameLayout"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:gravity="center"
+    android:focusable="true"
+    android:clickable="true"
+    android:background="@drawable/file_or_text_post"
+        >
+
+    <ImageView
+        android:id="@+id/fileThumbnail"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/upload_file_icon"
+        android:layout_gravity="center"
+        />
+
+
+    <TextView
+        android:id="@+id/fileName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Dosya Adı.pdf"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:layout_marginStart="10dp"
+        android:padding="3dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        />
+
+
+    </LinearLayout>

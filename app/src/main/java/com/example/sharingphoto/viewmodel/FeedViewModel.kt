@@ -33,16 +33,30 @@ class FeedViewModel(application: Application) : AndroidViewModel(application) {
 
     private var today = Date()
 
-    private val auth = FirebaseAuth.getInstance()
 
 
-    fun getPosts() {
+    fun getPosts(currentUserId : String?) {
 
         viewModelScope.launch(Dispatchers.IO) {
             try
             {
-                val postList = feedRepository.getPosts()
-                postLiveData.postValue(postList)
+                if(currentUserId != null)
+                {
+                    feedRepository.getPosts(currentUserId).collect {
+                            postList ->
+                        withContext(Dispatchers.Main) {
+                            postLiveData.value = postList
+                        }
+
+                    }
+                }
+                else
+                {
+                    withContext(Dispatchers.Main) {
+                        errorLiveData.value = "Kullanıcı bilgileri alınamıyor"
+                    }
+                }
+
             }
             catch(e : Exception)
             {
@@ -112,12 +126,13 @@ class FeedViewModel(application: Application) : AndroidViewModel(application) {
                 if (postId != null)
                 {
                     feedRepository.deletePost(post)
+                    println("silindi")
                 }
                 else
                 {
                     errorLiveData.postValue("Post bulunamıyor")
                 }
-                getPosts()
+                getPosts(post.user_id!!)
 
             }
             catch (e: Exception)
@@ -139,6 +154,7 @@ class FeedViewModel(application: Application) : AndroidViewModel(application) {
                 }
                 withContext(Dispatchers.Main) {
                     errorLiveData.value = errorMessage
+                    println(errorMessage)
                 }
             }
         }

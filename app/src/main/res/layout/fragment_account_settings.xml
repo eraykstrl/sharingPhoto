@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".view.AccountSettingsFragment"
+    android:background="#CFD8DC"
+
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/errorTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <ImageView
+            android:id="@+id/backIcon"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/arrow_back"
+            />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/secondLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+        <TextView
+            android:id="@+id/accountSettingsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hesap Ayarları"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"
+            />
+
+        <TextView
+            android:id="@+id/currentNameTextViewInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Ad"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/accountSettingsTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/currentNameTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            app:layout_constraintTop_toBottomOf="@id/currentNameTextViewInfo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textSize="20sp"
+
+            />
+
+        <TextView
+            android:id="@+id/currentSurnameTextViewInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Soyad"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/currentNameTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/currentSurnameTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            app:layout_constraintTop_toBottomOf="@id/currentSurnameTextViewInfo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textSize="20sp"
+
+            />
+
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="#BDBDBD"
+            app:layout_constraintTop_toBottomOf="@id/currentSurnameTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:id="@+id/info1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Ad bilgilerinizi değiştirmek istiyorsanız lütfen yeni bilgileri giriniz"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"/>
+
+        <EditText
+            android:id="@+id/newNameEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Ad"
+            android:inputType="text"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            app:layout_constraintTop_toBottomOf="@id/info1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"
+            android:textSize="20sp"
+            />
+
+        <EditText
+            android:id="@+id/newSurnameEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Soyad"
+            android:inputType="text"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            app:layout_constraintTop_toBottomOf="@id/newNameEditText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"
+            android:textSize="20sp"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/changeNameOrSurnameButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="İsim Bilgileri Değiştir"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:layout_marginTop="10dp"
+            app:cornerRadius="12dp"
+            app:backgroundTint="#FFF59D"
+            android:textColor="@android:color/black"
+            app:layout_constraintTop_toBottomOf="@id/newSurnameEditText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textStyle="bold"
+            />
+
+
+        <TextView
+            android:id="@+id/currentUsernameTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Kullanıcı Adı"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/changeNameOrSurnameButton"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/usernameTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            app:layout_constraintTop_toBottomOf="@id/currentUsernameTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textSize="20sp"
+
+            />
+
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="#BDBDBD"
+            app:layout_constraintTop_toBottomOf="@id/usernameTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:id="@+id/newUsernameTextViewInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Kullanıcı adı bilgilerinizi değiştirmek istiyorsanız lütfen yeni bilgileri giriniz"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/divider2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"/>
+
+        <EditText
+            android:id="@+id/newUsernameEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Yeni Kullanıcı Adı"
+            android:inputType="textEmailAddress"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            app:layout_constraintTop_toBottomOf="@id/newUsernameTextViewInfo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"
+            android:textSize="20sp"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/changeUsernameButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Kullanıcı Adı Değiştir"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:layout_marginTop="10dp"
+            app:cornerRadius="12dp"
+            app:backgroundTint="#FFF59D"
+            android:textColor="@android:color/black"
+            app:layout_constraintTop_toBottomOf="@id/newUsernameEditText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/currentAboutMeTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Hakkımda"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/changeUsernameButton"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/aboutMeTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            app:layout_constraintTop_toBottomOf="@id/currentAboutMeTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textSize="20sp"
+
+            />
+
+
+        <View
+            android:id="@+id/divider3"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="#BDBDBD"
+            app:layout_constraintTop_toBottomOf="@id/aboutMeTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:id="@+id/newAboutMeTextViewInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Hakkımda bilgisini değiştirmek istiyorsanız lütfen metni giriniz, boş da bırakbilirsiniz :)"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/divider3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"/>
+
+        <EditText
+            android:id="@+id/newAboutMeEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Hakkımda"
+            android:inputType="textMultiLine"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            app:layout_constraintTop_toBottomOf="@id/newAboutMeTextViewInfo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"
+            android:textSize="20sp"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/changeAboutMeButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Hakkımda Metni Değiştir"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:layout_marginTop="10dp"
+            app:cornerRadius="12dp"
+            app:backgroundTint="#FFF59D"
+            android:textColor="@android:color/black"
+            app:layout_constraintTop_toBottomOf="@id/newAboutMeEditText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/privacyLinearLayout"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            />
+
+
+        <LinearLayout
+            android:id="@+id/privacyLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/changeAboutMeButton"
+            app:layout_constraintBottom_toTopOf="@+id/changePrivacyButton"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Gizlilik"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:padding="3dp"
+                />
+
+            <TextView
+                android:id="@+id/privacyTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:padding="3dp"
+                android:text="Herkese Açık"
+                />
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/changePrivacyButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Gizlilik Ayarı Kaydet"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:layout_marginTop="10dp"
+            app:cornerRadius="12dp"
+            app:backgroundTint="#FFF59D"
+            android:textColor="@android:color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -34,6 +34,9 @@
         <action
             android:id="@+id/action_feedFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_feedFragment_to_discoverFragment2"
+            app:destination="@id/discoverFragment2" />
     </fragment>
     <fragment
         android:id="@+id/uploadFragment"
@@ -52,6 +55,9 @@
         <action
             android:id="@+id/action_uploadFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_uploadFragment_to_profileFragment2"
+            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/signInFragment"
@@ -64,6 +70,9 @@
         <action
             android:id="@+id/action_signInFragment_to_userFragment"
             app:destination="@id/userFragment" />
+        <action
+            android:id="@+id/action_signInFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -106,6 +115,24 @@
         <action
             android:id="@+id/action_settingsFragment_to_questionFragment"
             app:destination="@id/questionFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_sendFriendRequestFragment"
+            app:destination="@id/sendFriendRequestFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_friendRequestFragment"
+            app:destination="@id/friendRequestFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_showYourRequestFragment"
+            app:destination="@id/showYourRequestFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_accountSettingsFragment2"
+            app:destination="@id/accountSettingsFragment2" />
+        <action
+            android:id="@+id/action_settingsFragment_to_savedPostsFragment"
+            app:destination="@id/savedPostsFragment" />
     </fragment>
     <fragment
         android:id="@+id/firstFragment"
@@ -186,6 +213,18 @@
         <action
             android:id="@+id/action_profileFragment_to_personalPostFragment"
             app:destination="@id/personalPostFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_userFollowersFragment"
+            app:destination="@id/userFollowersFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_userFollowingFragment"
+            app:destination="@id/userFollowingFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_otherProfileFragment"
+            app:destination="@id/otherProfileFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_videoProfileFragment"
+            app:destination="@id/videoProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/personalPostFragment"
@@ -193,12 +232,164 @@
         android:label="fragment_personal_post"
         tools:layout="@layout/fragment_personal_post" >
 
-        <argument android:name="userId"
+        <argument android:name="postId"
             app:argType="string"
             />
         <action
             android:id="@+id/action_personalPostFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <argument
+            android:name="profileId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/sendFriendRequestFragment"
+        android:name="com.example.sharingphoto.view.SendFriendRequestFragment"
+        android:label="fragment_send_friend_request"
+        tools:layout="@layout/fragment_send_friend_request" >
+        <action
+            android:id="@+id/action_sendFriendRequestFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/friendRequestFragment"
+        android:name="com.example.sharingphoto.view.FriendRequestFragment"
+        android:label="fragment_friend_request"
+        tools:layout="@layout/fragment_friend_request" >
+        <action
+            android:id="@+id/action_friendRequestFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/showYourRequestFragment"
+        android:name="com.example.sharingphoto.view.ShowYourRequestFragment"
+        android:label="fragment_show_your_request"
+        tools:layout="@layout/fragment_show_your_request" >
+        <action
+            android:id="@+id/action_showYourRequestFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userFollowersFragment"
+        android:name="com.example.sharingphoto.view.UserFollowersFragment"
+        android:label="fragment_user_followers"
+        tools:layout="@layout/fragment_user_followers" >
+        <argument android:name="userid"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/userFollowingFragment"
+        android:name="com.example.sharingphoto.view.UserFollowingFragment"
+        android:label="fragment_user_following"
+        tools:layout="@layout/fragment_user_following" >
+        <argument
+            android:name="userid"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/accountSettingsFragment2"
+        android:name="com.example.sharingphoto.view.AccountSettingsFragment"
+        android:label="fragment_account_settings"
+        tools:layout="@layout/fragment_account_settings" >
+        <action
+            android:id="@+id/action_accountSettingsFragment2_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/discoverFragment2"
+        android:name="com.example.sharingphoto.view.DiscoverFragment"
+        android:label="fragment_discover"
+        tools:layout="@layout/fragment_discover" >
+        <action
+            android:id="@+id/action_discoverFragment2_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_discoverFragment2_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_discoverFragment2_self"
+            app:destination="@id/discoverFragment2" />
+        <action
+            android:id="@+id/action_discoverFragment2_to_uploadFragment"
+            app:destination="@id/uploadFragment" />
+        <action
+            android:id="@+id/action_discoverFragment2_to_feedFragment"
+            app:destination="@id/feedFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/otherProfileFragment"
+        android:name="com.example.sharingphoto.view.OtherProfileFragment"
+        android:label="fragment_other_profile"
+        tools:layout="@layout/fragment_other_profile" >
+        <action
+            android:id="@+id/action_otherProfileFragment_to_videoProfileFragment"
+            app:destination="@id/videoProfileFragment" />
+        <action
+            android:id="@+id/action_otherProfileFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <argument
+            android:name="userId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_otherProfileFragment_to_feedFragment"
+            app:destination="@id/feedFragment" />
+        <action
+            android:id="@+id/action_otherProfileFragment_to_uploadFragment"
+            app:destination="@id/uploadFragment" />
+        <action
+            android:id="@+id/action_otherProfileFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_otherProfileFragment_to_personalPostFragment"
+            app:destination="@id/personalPostFragment" />
+        <action
+            android:id="@+id/action_otherProfileFragment_to_userFollowingFragment"
+            app:destination="@id/userFollowingFragment" />
+        <action
+            android:id="@+id/action_otherProfileFragment_to_userFollowersFragment"
+            app:destination="@id/userFollowersFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/videoProfileFragment"
+        android:name="com.example.sharingphoto.view.VideoProfileFragment"
+        android:label="fragment_video_profile"
+        tools:layout="@layout/fragment_video_profile" >
+        <action
+            android:id="@+id/action_videoProfileFragment_to_otherProfileFragment"
+            app:destination="@id/otherProfileFragment" />
+        <action
+            android:id="@+id/action_videoProfileFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <argument
+            android:name="userId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_videoProfileFragment_to_feedFragment"
+            app:destination="@id/feedFragment" />
+        <action
+            android:id="@+id/action_videoProfileFragment_to_uploadFragment"
+            app:destination="@id/uploadFragment" />
+        <action
+            android:id="@+id/action_videoProfileFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_videoProfileFragment_to_personalPostFragment"
+            app:destination="@id/personalPostFragment" />
+        <action
+            android:id="@+id/action_videoProfileFragment_to_userFollowingFragment"
+            app:destination="@id/userFollowingFragment" />
+        <action
+            android:id="@+id/action_videoProfileFragment_to_userFollowersFragment"
+            app:destination="@id/userFollowersFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/savedPostsFragment"
+        android:name="com.example.sharingphoto.view.SavedPostsFragment"
+        android:label="fragment_saved_posts"
+        tools:layout="@layout/fragment_saved_posts" >
+        <action
+            android:id="@+id/action_savedPostsFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
 
 </navigation>

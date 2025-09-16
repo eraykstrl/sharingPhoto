@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="@color/white"
+    android:elevation="4dp"
+>
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/recyclerImageView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/post_border"
+        android:layout_marginTop="35dp"
+        android:scaleType="centerCrop"
+        />
+
+
+
+</LinearLayout>

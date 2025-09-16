@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:background="@color/white"
+    >
+
+    <TextView
+        android:id="@+id/requestRowUsername"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="USERNAME"
+        android:layout_weight="1"
+        android:gravity="start|center"
+        android:padding="2dp"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:ellipsize="end"
+        android:scrollHorizontally="true"
+        android:maxLines="1"
+        />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/requestRejectButton"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_weight="1"
+        android:text="Reddet"
+        android:textAllCaps="false"
+        android:backgroundTint="@color/white"
+        android:textStyle="bold"
+        android:layout_marginEnd="2dp"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/requestAcceptButton"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:text="Kabul et"
+        android:textAllCaps="false"
+        android:background="@color/amber_custom"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="4dp"
+        />
+
+
+
+</LinearLayout>

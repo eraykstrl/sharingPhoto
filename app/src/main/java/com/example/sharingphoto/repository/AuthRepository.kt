@@ -13,7 +13,6 @@ class AuthRepository {
 
     private val auth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
-    private var error : String ?= null
 
     suspend fun signInWithEmailAndPassword(email : String,password : String) : FirebaseUser?
     {
@@ -27,7 +26,7 @@ class AuthRepository {
         val userId = authResult.user?.uid
         val individualCode = UUID.randomUUID().toString()
         val hashedPassword = hashPassword(password+individualCode)
-        val user = User(userId!!,name,surname,username,email,password = hashedPassword,individual = individualCode)
+        val user = User(userId!!,name,surname,username,email,password = hashedPassword,individual = individualCode, isPrivate = false)
         firestore.collection("Users").document(userId).set(user).await()
         return authResult.user
     }

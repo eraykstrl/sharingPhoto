@@ -7,11 +7,14 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -25,40 +28,182 @@ class FeedRepository {
     private val auth = FirebaseAuth.getInstance()
     private var postList : MutableList<Post> = mutableListOf()
 
-    suspend fun getPosts() : List<Post>
-    {
-        val posts = firestore.collection("Posts").orderBy("postDate", Query.Direction.ASCENDING).get().await()
-            .toObjects(Post::class.java)
-        val userId = auth.currentUser?.uid
-        val username = getCurrentUserById(userId!!)
-        for(post in posts)
+
+
+    fun getPosts(currentUserId : String) : Flow<List<Post>> = flow {
+
+        var flag = true
+        var lastDocument : DocumentSnapshot ?= null
+        var batchSize : Long = 50L
+        val currentUser = firestore.collection("Users").document(currentUserId)
+        val friendList = (currentUser.get().await().get("following") as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+
+        val currentUsername = firestore.collection("Users").document(currentUserId).get().await().getString("username")
+        while(flag)
         {
-            post.likes.forEach {
-                if(it == username)
-                {
-                    post.isLiked = true
-                }
-                else
-                {
-                    post.isLiked = false
-                }
+            val query = if(lastDocument == null)
+            {
+                firestore.collection("Posts").orderBy("postDate").limit(batchSize)
             }
-            post.likeCounter = post.likes.size
-            post.commentCounter = post.comment.size
+            else
+            {
+                firestore.collection("Posts").orderBy("postDate").limit(batchSize).startAfter(lastDocument)
+            }
+
+            var snapshot = query.get().await()
+            if(snapshot.isEmpty)
+            {
+                flag = false
+            }
+            else
+            {
+                var posts = snapshot.toObjects(Post::class.java)
+                posts = posts.filter {
+                    it.user_id == currentUserId || friendList.contains(it.user_id)
+                }
+                posts.forEach {
+                    if(it.likes.contains(currentUsername))
+                    {
+                        it.isLiked = true
+                    }
+                    it.commentCounter = it.comment.size
+                    it.likeCounter = it.likes.size
+                }
+                emit(posts)
+                lastDocument = snapshot.documents.last()
+
+            }
         }
 
-        postList.clear()
-        postList.addAll(posts)
-        return postList
     }
 
-    suspend fun getCurrentUserById(userId : String) : String
-    {
-        val user = firestore.collection("Users").document(userId).get().await()
-        val username = user.getString("username")
+    fun getAllPosts(currentUserId : String) : Flow<List<Post>> = flow {
 
-        return username!!
+        var flag = true
+        var lastDocument : DocumentSnapshot ?= null
+        var batchSize : Long = 50L
+        val currentUsername = firestore.collection("Users").document(currentUserId).get().await().getString("username")
+
+        while(flag)
+        {
+            val query = if(lastDocument == null)
+            {
+                firestore.collection("Posts").orderBy("postDate").whereEqualTo("isPrivate",false).limit(batchSize)
+            }
+            else
+            {
+                firestore.collection("Posts").orderBy("postDate").whereEqualTo("isPrivate",false).limit(batchSize).startAfter(lastDocument)
+            }
+
+            var snapshot = query.get().await()
+            if(snapshot.isEmpty)
+            {
+                flag = false
+            }
+            else
+            {
+                var posts = snapshot.toObjects(Post::class.java)
+                posts.forEach {
+                    if(it.likes.contains(currentUsername))
+                    {
+                        it.isLiked = true
+                    }
+                    it.commentCounter = it.comment.size
+                    it.likeCounter = it.likes.size
+                }
+                emit(posts)
+                lastDocument = snapshot.documents.last()
+
+            }
+        }
+
     }
+
+    fun getAllPostsById(currentUserId : String,receiveId : String) : Flow<List<Post>> = flow {
+
+        var flag = true
+        var lastDocument : DocumentSnapshot ?= null
+        var batchSize : Long = 50L
+        val currentUsername = firestore.collection("Users").document(currentUserId).get().await().getString("username")
+
+        while(flag)
+        {
+            val query = if(lastDocument == null)
+            {
+                firestore.collection("Posts").orderBy("postDate").whereEqualTo("user_id",receiveId).limit(batchSize)
+            }
+            else
+            {
+                firestore.collection("Posts").orderBy("postDate").whereEqualTo("user_id",receiveId).limit(batchSize).startAfter(lastDocument)
+            }
+
+            var snapshot = query.get().await()
+            if(snapshot.isEmpty)
+            {
+                flag = false
+            }
+            else
+            {
+                var posts = snapshot.toObjects(Post::class.java)
+                posts.forEach {
+                    if(it.likes.contains(currentUsername))
+                    {
+                        it.isLiked = true
+                    }
+                    it.commentCounter = it.comment.size
+                    it.likeCounter = it.likes.size
+                }
+                emit(posts)
+                lastDocument = snapshot.documents.last()
+
+            }
+        }
+
+    }
+
+    fun getSavedPost(currentUserId: String): Flow<List<Post>> = flow {
+        val userDoc = firestore.collection("Users").document(currentUserId).get().await()
+        val currentUsername = userDoc.getString("username") ?: ""
+        val followingUsers = (userDoc.get("following") as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+        val savedPostIds = (userDoc.get("savedPosts") as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+
+        val batchSize = 10
+        var start = 0
+        println("get saved post girdi")
+
+        println("size ${savedPostIds.size}")
+        while (start < savedPostIds.size) {
+            val batchIds = savedPostIds.subList(start, minOf(start + batchSize, savedPostIds.size))
+
+            val snapshot = firestore.collection("Posts")
+                .whereIn("postId", batchIds)
+                .orderBy("postDate")
+                .get()
+                .await()
+
+            val posts = snapshot.toObjects(Post::class.java)
+                .filter { post ->
+                    val postUserDoc = firestore.collection("Users").document(post.user_id!!).get().await()
+                    val isPrivate = postUserDoc.getBoolean("isPrivate") ?: false
+
+                    !isPrivate || post.user_id in followingUsers || post.user_id == currentUsername
+                }
+                .map { post ->
+                    post.isLiked = post.likes.contains(currentUsername)
+                    post.commentCounter = post.comment.size
+                    post.likeCounter = post.likes.size
+                    post
+                }
+
+
+            posts.forEach {
+                println("id ${it.postId}")
+            }
+            emit(posts)
+            start += batchSize
+        }
+    }
+
 
 
     suspend fun updatePost(postId : String) : Post?
@@ -98,6 +243,7 @@ class FeedRepository {
         val user = firestore.collection("Users").document(userId).get().await()
         val username = user.getString("username")
         val postId = post.postId
+        println("update like girdi ve info $info")
         if(postId != null)
         {
             val postInstance = firestore.collection("Posts").document(postId)
@@ -158,7 +304,6 @@ class FeedRepository {
         val postId = post.postId
         if(postId != null)
         {
-            println("save post repository içindeyim simdi save edicez")
             firestore.collection("Users").document(userId).update("savedPosts", FieldValue.arrayUnion(postId)).await()
         }
     }

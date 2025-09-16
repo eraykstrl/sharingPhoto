@@ -1,47 +1,46 @@
 package com.example.sharingphoto.view
-
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.ImageDecoder
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.ContextThemeWrapper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.sharingphoto.R
-import com.example.sharingphoto.adapter.PostAdapter
+import com.example.sharingphoto.adapter.ProfileAdapter
 import com.example.sharingphoto.databinding.FragmentProfileBinding
-import com.example.sharingphoto.model.Comment
 import com.example.sharingphoto.model.Post
+import com.example.sharingphoto.util.downloadImage
+import com.example.sharingphoto.util.makePlaceHolder
 import com.example.sharingphoto.viewmodel.ProfileViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
-import com.squareup.picasso.Picasso
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.storage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlin.io.path.fileVisitor
 
 
 class ProfileFragment : Fragment() {
@@ -49,18 +48,22 @@ class ProfileFragment : Fragment() {
     private var _binding : FragmentProfileBinding ?= null
     private val binding get() = _binding!!
     private val postList : ArrayList<Post> = arrayListOf()
-    private var postAdapter : PostAdapter ?=null
+    private var profileAdapter : ProfileAdapter ?=null
     private lateinit var auth : FirebaseAuth
     private lateinit var viewModel : ProfileViewModel
+    private lateinit var storage : FirebaseStorage
 
     private lateinit var activityResultLauncher : ActivityResultLauncher<Intent>
     private lateinit var permissionLauncher : ActivityResultLauncher<String>
     private var selectedImage : Uri ?= null
     private var selectedBitmap : Bitmap ?= null
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         registerLauncher()
+        storage = Firebase.storage
         auth = Firebase.auth
         viewModel = ViewModelProvider(this)[ProfileViewModel::class.java]
 
@@ -82,15 +85,31 @@ class ProfileFragment : Fragment() {
         arguments?.let {
             val info = ProfileFragmentArgs.fromBundle(it).profileId
             val currentUser = auth.currentUser
-            println("user id'si $info")
+            lifecycleScope.launch(Dispatchers.IO) {
+                viewModel.getPostsFromInternet(info)
+            }
             if(currentUser != null)
             {
-                lifecycleScope.launch(Dispatchers.IO) {
-                    viewModel.getPostsFromInternet(info)
-                }
-                postAdapter(info)
 
+                binding.swipeRefreshLayout.setOnRefreshListener {
+                    binding.profileRecyclerView.visibility = View.GONE
+                    binding.errorTextView.visibility = View.GONE
+                    binding.progressBar.visibility = View.VISIBLE
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        viewModel.getPostsFromInternet(info)
+                    }
+                    binding.swipeRefreshLayout.isRefreshing = false
+                }
+
+                lifecycleScope.launch(Dispatchers.IO) {
+                    viewModel.getFollowingInfo(info)
+
+                }
+                lifecycleScope.launch(Dispatchers.IO) {
+                    viewModel.getUser(info)
+                }
                 observerLiveData()
+                getProfileAdapter()
                 binding.profilePhotoImageView.setOnClickListener {
                     selectImage(it)
                 }
@@ -110,14 +129,49 @@ class ProfileFragment : Fragment() {
                     updateUI(action)
                 }
 
-                lifecycleScope.launch(Dispatchers.IO) {
-                    viewModel.getUser(info)
+
+                binding.videosImageView.setOnClickListener {
+                    val action = ProfileFragmentDirections.actionProfileFragmentToVideoProfileFragment(info)
+                    updateUI(action)
                 }
+
+                binding.otherImageView.setOnClickListener {
+                    val action = ProfileFragmentDirections.actionProfileFragmentToOtherProfileFragment(info)
+                    updateUI(action)
+                }
+
+
+
+
+                binding.followButton.setOnClickListener {
+                    val colorInt = (binding.root.background as? ColorDrawable)?.color
+                    val hexColor = String.format("#%06X", 0xFFFFFF and (colorInt ?: 0))
+                    val amberCustom = ContextCompat.getColor(requireContext(),R.color.amber_custom)
+                    if(hexColor == "#CFD8DC")
+                    {
+                        binding.followButton.setBackgroundColor(amberCustom)
+                    }
+                    else
+                    {
+                        binding.followButton.setBackgroundColor(Color.WHITE)
+                    }
+
+                    viewModel.followingRequest(info)
+                }
+
 
             }
         }
 
 
+    }
+
+    private fun getProfileAdapter()
+    {
+        profileAdapter = ProfileAdapter(postList)
+        binding.profileRecyclerView.layoutManager = StaggeredGridLayoutManager(3,
+            LinearLayoutManager.VERTICAL)
+        binding.profileRecyclerView.adapter = profileAdapter
     }
 
 
@@ -257,241 +311,205 @@ class ProfileFragment : Fragment() {
 
 
 
-    private fun postAdapter(info : String)
-    {
-        val user_id = auth.currentUser?.uid
-        postAdapter = PostAdapter(postList,
-
-            recyclerViewVisibility =  {
-                post ->
-                val postId = post.postId
-                val commentList = ArrayList<Comment>()
-                commentList.addAll(post.comment)
-                postAdapter?.showComments(postId!!,commentList)
-
-            },
-            onCommentClick =  {
-                    comment ->
-                if(comment.user_id == user_id)
-                {
-                    comment.isCommentOwner = true
-                }
-
-            },
-            postUserId = {
-                    post->
-                val postOwnerId = post.user_id
-                if(postOwnerId == user_id)
-                {
-                    post.isOwner = true
-                }
-            },
-            sendComment = {
-                    post,comment ->
-                if(comment != "")
-                {
-//                    viewModel.setComment(post,comment)
-                }
-                else
-                {
-                    Snackbar.make(requireView(),"Yorum alanı boş bırakılamaz!", Snackbar.LENGTH_SHORT).show()
-                }
-
-            },
-
-            updateComment = {
-                    comment , post ->
-                lifecycleScope.launch(Dispatchers.IO) {
-//                    viewModel.updateOwnerComment(comment,post)
-                }
-
-            }
-            , updateLike = {
-                    post,info ->
-                val userId = auth.currentUser?.uid
-                lifecycleScope.launch(Dispatchers.IO) {
-//                    viewModel.updateLike(post,info,userId!!)
-                }
-            },
-            modifyComment = {
-                    newComment,comment ->
-                if(newComment != "")
-                {
-                    lifecycleScope.launch {
-//                        viewModel.modifyComment(newComment,comment)
-                    }
-
-                }
-                else
-                {
-                    Snackbar.make(requireView(),"Yorum alanı boş bırakılamaz!", Snackbar.LENGTH_SHORT).show()
-                }
-            }
-            , openPopUpPost = {
-                    holder,post,view ->
-                val popup = PopupMenu(ContextThemeWrapper(view.context,R.style.PopUpMenuCustom),view)
-
-                popup.menuInflater.inflate(R.menu.post_settings_menu,popup.menu)
-                if(post.isOwner)
-                {
-                    popup.menu.findItem(R.id.deletePostItem).isVisible = true
-                    popup.menu.findItem(R.id.reportPostItem).isVisible = true
-                    popup.menu.findItem(R.id.sharePost).isVisible = true
-                    popup.menu.findItem(R.id.modifyPost).isVisible = true
-                    popup.menu.findItem(R.id.savePost).isVisible = true
-                }
-
-                else
-                {
-                    popup.menu.findItem(R.id.deletePostItem).isVisible = false
-                    popup.menu.findItem(R.id.reportPostItem).isVisible = true
-                    popup.menu.findItem(R.id.sharePost).isVisible = true
-                    popup.menu.findItem(R.id.modifyPost).isVisible = false
-                    popup.menu.findItem(R.id.savePost).isVisible = true
-                }
-
-
-                popup.setOnMenuItemClickListener {
-                        item ->
-                    when(item.itemId)
-                    {
-                        R.id.modifyPost -> {
-                            holder.binding.savePostModify.visibility = View.VISIBLE
-                            holder.binding.postOwnerComment.isEnabled = true
-                            holder.binding.postOwnerComment.setSelection(holder.binding.postOwnerComment.text.length)
-                            holder.binding.postOwnerComment.requestFocus()
-                            true
-                        }
-
-                        R.id.sharePost -> {
-                            val context = holder.itemView.context
-                            val postLink = "https://github.com/eraykstrl?tab=repositories"
-                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                type = "text/plain"
-                                putExtra(Intent.EXTRA_SUBJECT,"Paylaşmak istediğiniz gönderi")
-                                putExtra(Intent.EXTRA_TEXT,postLink)
-                            }
-                            context.startActivity(Intent.createChooser(shareIntent,"Gönderiyi paylaş"))
-                            true
-                        }
-
-                        R.id.savePost ->
-                        {
-//                            val userId = user?.uid
-//                            if(userId != null)
-//                            {
-//                                lifecycleScope.launch(Dispatchers.IO) {
-////                                    viewModel.savePostId(post,userId)
-//                                }
-//                            }
-                            true
-                        }
-
-                        R.id.deletePostItem -> {
-                            lifecycleScope.launch(Dispatchers.IO) {
-//                                viewModel.deletePost(post)
-                            }
-                            true
-                        }
-
-                        R.id.reportPostItem -> {
-                            true
-                        }
-
-                        else ->
-                        {
-                            false
-                        }
-                    }
-                }
-
-
-                popup.show()
-
-            },
-            openPopUpComment = {
-                    holder,comment,view->
-                val popUp = PopupMenu(ContextThemeWrapper(view.context,R.style.PopUpMenuCustom),view)
-                popUp.menuInflater.inflate(R.menu.comment_settings,popUp.menu)
-
-
-                if(comment.isCommentOwner!!)
-                {
-                    popUp.menu.findItem(R.id.reportComment).isVisible = true
-                    popUp.menu.findItem(R.id.deleteComment).isVisible = true
-                    popUp.menu.findItem(R.id.modifyComment).isVisible = true
-                }
-
-                else
-                {
-                    popUp.menu.findItem(R.id.reportComment).isVisible = true
-
-                }
-
-                popUp.setOnMenuItemClickListener {
-                        item ->
-                    when(item.itemId)
-                    {
-                        R.id.modifyComment -> {
-                            holder.binding.commentImageView.visibility = View.GONE
-                            holder.binding.modifyCommentButton.visibility = View.VISIBLE
-                            holder.binding.commentRecyclerViewEdit.isEnabled = true
-                            holder.binding.commentRecyclerViewEdit.setSelection(holder.binding.commentRecyclerViewEdit.text.length)
-                            holder.binding.commentRecyclerViewEdit.requestFocus()
-                            true
-                        }
-                        R.id.deleteComment -> {
-                            lifecycleScope.launch() {
-//                                viewModel.deleteComment(comment)
-                            }
-                            true
-                        }
-
-                        R.id.reportComment -> {
-                            true
-                        }
-
-                        else -> {
-                            true
-                        }
-                    }
-                }
-
-                popUp.show()
-            },
-            clickPost = {
-                userId->
-                val action = ProfileFragmentDirections.actionProfileFragmentToPersonalPostFragment(userId)
-                updateUI(action)
-            },
-            clickUsername =  {
-                userId ->
-            }
-
-        )
-
-        binding.profileRecyclerView.layoutManager = StaggeredGridLayoutManager(3,
-            StaggeredGridLayoutManager.VERTICAL)
-        binding.profileRecyclerView.adapter = postAdapter
-    }
 
 
     private fun observerLiveData()
     {
         viewModel.postLiveData.observe(viewLifecycleOwner) {
             posts ->
-            postAdapter?.updateAdapter(posts)
+            profileAdapter?.updateAdapter(posts)
+
+
         }
 
         viewModel.userLiveData.observe(viewLifecycleOwner) {
             user ->
+            binding.profileImageView.visibility = View.VISIBLE
+            binding.followerNumberTextView.visibility = View.VISIBLE
+            binding.followingNumberTextView.visibility = View.VISIBLE
+            binding.aboutEditText.setText(user.aboutUser)
+            if(user.profilePhoto.isNullOrEmpty())
+            {
+                binding.profilePhotoImageView.visibility = View.VISIBLE
+            }
+            else
+            {
+                binding.profilePhotoImageView.downloadImage(user.profilePhoto, makePlaceHolder(requireContext()))
+            }
             val builder = StringBuilder()
-            println("user adı ${user.name}")
             builder.append(user.name)
             builder.append(" ")
             builder.append(user.surname)
             binding.nameTextView.text = builder.toString()
-            Picasso.get().load(user.profilePhoto).into(binding.profilePhotoImageView)
+            var followerCount : Int =0
+            var followingCount : Int =0
+            followerCount = if(user.follower.isEmpty()) 0 else user.follower.size
+            followingCount = if(user.following.isEmpty()) 0 else user.following.size
+            binding.followerNumberTextView.text = followerCount.toString()
+            binding.followingNumberTextView.text = followingCount.toString()
+            if(user.aboutUser != null || user.aboutUser != "")
+            {
+                binding.aboutEditText.setText(user.aboutUser)
+
+            }
+
+
+            binding.followerTextView.setOnClickListener {
+                if(followerCount != 0)
+                {
+                    if(findNavController().currentDestination?.id == R.id.profileFragment)
+                    {
+                        val action = ProfileFragmentDirections.actionProfileFragmentToUserFollowersFragment(user.user_id)
+                        updateUI(action)
+                    }
+
+                }
+                else
+                {
+                    Snackbar.make(requireView(),"Görüntülenecek kullanıcı yok", Snackbar.LENGTH_SHORT).show()
+
+                }
+
+            }
+            binding.followerNumberTextView.setOnClickListener {
+                if(followerCount != 0)
+                {
+                    if(findNavController().currentDestination?.id == R.id.profileFragment)
+                    {
+                        val action = ProfileFragmentDirections.actionProfileFragmentToUserFollowersFragment(user.user_id)
+                        updateUI(action)
+                    }
+                }
+                else
+                {
+                    Snackbar.make(requireView(),"Görüntülenecek kullanıcı yok", Snackbar.LENGTH_SHORT).show()
+
+                }
+            }
+
+
+
+            binding.followingNumberTextView.setOnClickListener {
+                if(followingCount != 0)
+                {
+                    val action = ProfileFragmentDirections.actionProfileFragmentToUserFollowingFragment(user.user_id)
+                    updateUI(action)
+                }
+                else
+                {
+                    Snackbar.make(requireView(),"Görüntülenecek kullanıcı yok", Snackbar.LENGTH_SHORT).show()
+
+                }
+            }
+
+            binding.followingTextView.setOnClickListener {
+                if(followingCount != 0)
+                {
+                    val action = ProfileFragmentDirections.actionProfileFragmentToUserFollowingFragment(user.user_id)
+                    updateUI(action)
+                }
+                else
+                {
+                    Snackbar.make(requireView(),"Görüntülenecek kullanıcı yok", Snackbar.LENGTH_SHORT).show()
+
+                }
+            }
+
+        }
+
+        viewModel.errorLiveData.observe(viewLifecycleOwner) {
+            error ->
+        }
+
+        viewModel.loadingLiveData.observe(viewLifecycleOwner) {
+            it ->
+            if(it)
+            {
+                binding.errorTextView.visibility = View.GONE
+                binding.profileRecyclerView.visibility = View.GONE
+                binding.profileImageView.visibility = View.GONE
+                binding.followerNumberTextView.visibility = View.GONE
+                binding.followingNumberTextView.visibility = View.GONE
+                binding.progressBar.visibility = View.VISIBLE
+
+            }
+            else
+            {
+                binding.progressBar.visibility = View.GONE
+
+            }
+
+        }
+
+
+        viewModel.followingRequestLiveData.observe(viewLifecycleOwner) {
+            (user,data) ->
+            val customColor = ContextCompat.getColor(requireContext(),R.color.button_back_color)
+            val customTextColor = ContextCompat.getColor(requireContext(),R.color.amber_custom)
+            println("gizli mi ${user.isPrivate}")
+            if(data == 1 && user.isPrivate != false)
+            {
+                binding.lockImageView.visibility = View.VISIBLE
+                binding.followButton.text = "Takip Et"
+                binding.followButton.setBackgroundColor(customColor)
+                binding.followButton.setTextColor(customTextColor)
+                binding.followButton.setOnClickListener {
+                    binding.followButton.text = "Takip İsteği Gönderildi"
+                    binding.followButton.setBackgroundColor(Color.WHITE)
+                    binding.followButton.setTextColor(Color.BLACK)
+                    viewModel.addToFollowRequest(user.user_id)
+                }
+            }
+            else if(data == 2 && user.isPrivate != false)
+            {
+                binding.lockImageView.visibility = View.VISIBLE
+                binding.followButton.text = "Takip İsteği Gönderildi"
+                binding.profileRecyclerView.visibility = View.GONE
+                binding.followButton.setBackgroundColor(Color.WHITE)
+                binding.followButton.setTextColor(Color.BLACK)
+                binding.followButton.setOnClickListener {
+                    binding.followButton.text = "Takip Et"
+                    binding.followButton.setBackgroundColor(customColor)
+                    binding.followButton.setTextColor(customTextColor)
+                    viewModel.removeFromFollowRequest(user.user_id)
+                }
+            }
+            else if(data == 3) {
+                binding.lockImageView.visibility = View.GONE
+                binding.profileRecyclerView.visibility = View.VISIBLE
+                binding.followButton.text = "Takip Ediliyor"
+                binding.followButton.setBackgroundColor(Color.WHITE)
+                binding.followButton.setTextColor(Color.BLACK)
+                binding.followButton.setOnClickListener {
+                    val alert = AlertDialog.Builder(requireContext())
+                    alert.setTitle("Uyarı")
+                    alert.setMessage("Takipten çıkmak istediğinize emin misiniz tekrar takip isteği atmanız gerekecek")
+                    alert.setPositiveButton("Evet") {
+                        dialog, which ->
+
+                        binding.followButton.setBackgroundColor(customColor)
+                        binding.followButton.setTextColor(customTextColor)
+                        viewModel.removeFromFollowing(user.user_id)
+                        binding.followButton.text = "Takip Et"
+                        binding.profileRecyclerView.visibility = View.GONE
+                    }
+                    alert.setNegativeButton("İptal") {
+                        dialog,which ->
+                        dialog.dismiss()
+                    }
+                    alert.show()
+
+                }
+            }
+            else
+            {
+                binding.followButton.visibility = View.GONE
+                binding.profileRecyclerView.visibility = View.VISIBLE
+
+
+            }
+
+
         }
     }
 

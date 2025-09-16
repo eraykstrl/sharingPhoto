@@ -32,23 +32,54 @@ class PersonalPostViewModel(application: Application) : AndroidViewModel(applica
     val commentLiveData = MutableLiveData<Pair<String,List<Comment>>>()
     private var today = Date()
 
+    private val currentUserId = auth.currentUser?.uid
 
-    suspend fun getPostByUser(userId : String?)
-    {
-        if(userId != null)
-        {
-            postList.clear()
-            val posts = firestore.collection("Posts").whereEqualTo("user_id",userId).get().await().toObjects(
-                Post::class.java)
-            postList.addAll(posts)
+    fun getPostByUser(receiveId : String) {
 
-            withContext(Dispatchers.Main) {
-                personalProfileLiveData.value = postList
+        viewModelScope.launch(Dispatchers.IO) {
+            try
+            {
+                if(currentUserId != null)
+                {
+                    feedRepository.getAllPostsById(currentUserId,receiveId).collect {
+                            postList ->
+                        withContext(Dispatchers.Main) {
+                            personalProfileLiveData.value = postList
+                        }
+
+                    }
+                }
+                else
+                {
+                    withContext(Dispatchers.Main) {
+                        errorLiveData.value = "Kullanıcı bilgileri alınamıyor"
+                    }
+                }
+
             }
+            catch(e : Exception)
+            {
+                val errorMessage = when (e) {
+                    is FirebaseFirestoreException -> when (e.code) {
+                        FirebaseFirestoreException.Code.NOT_FOUND -> "Sayfa bulunamadı"
+                        FirebaseFirestoreException.Code.CANCELLED -> "İşlem iptal edildi"
+                        FirebaseFirestoreException.Code.UNKNOWN -> "Bilinmeyen hata oluştu"
+                        FirebaseFirestoreException.Code.PERMISSION_DENIED -> "İzin yok"
+                        FirebaseFirestoreException.Code.UNAVAILABLE -> "Sunucu kullanılamıyor"
+                        else -> "Bir hata oluştu: ${e.message}"
+                    }
 
+                    is FirebaseNetworkException -> "Network hatası: Lütfen internet bağlantınızı kontrol edin"
+                    is FirebaseException -> "Sunucuda bir problem oluştu, lütfen tekrar deneyiniz"
+                    else -> "Bilinmeyen bir hata oluştu: ${e.message}"
+                }
+                withContext(Dispatchers.Main) {
+                    errorLiveData.value = errorMessage
+                }
+            }
         }
-    }
 
+    }
 
     fun updatePost(postId : String)  {
         viewModelScope.launch(Dispatchers.IO) {
@@ -98,7 +129,7 @@ class PersonalPostViewModel(application: Application) : AndroidViewModel(applica
                 {
                     errorLiveData.postValue("Post bulunamıyor")
                 }
-                getPostByUser(post.user_id)
+                getPostByUser(post.user_id!!)
             }
             catch (e: Exception)
             {
@@ -168,7 +199,6 @@ class PersonalPostViewModel(application: Application) : AndroidViewModel(applica
         viewModelScope.launch(Dispatchers.IO) {
             try
             {
-                println("try içindeyiz")
                 val postId = post.postId
                 if (postId != null) {
                     feedRepository.savePost(post, userId)

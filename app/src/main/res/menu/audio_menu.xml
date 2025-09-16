@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:id="@+id/recordAudioItem" android:title="Ses Kaydet"
+        />
+
+    <item android:id="@+id/uploadAudioItem" android:title="Telefondan Ses Yükle"
+        />
+</menu>

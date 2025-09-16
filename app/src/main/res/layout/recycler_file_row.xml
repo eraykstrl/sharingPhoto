@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <LinearLayout
+        android:id="@+id/fileGeneralLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:background="@color/white"
+        android:elevation="4dp"
+        >
+        <ImageView
+            android:id="@+id/postSettingsImageView"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="top|end"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/post_settings" />
+
+        <LinearLayout
+            android:id="@+id/usernameLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:baselineAligned="false"
+            android:layout_marginStart="10dp"
+            >
+            <TextView
+                android:id="@+id/nameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="User Name"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:padding="0dp"
+                android:includeFontPadding="false"
+                />
+
+            <EditText
+                android:id="@+id/postOwnerComment"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:enabled="false"
+                android:gravity="start"
+                android:includeFontPadding="false"
+                android:padding="0dp"
+                android:scrollHorizontally="false"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:textStyle="italic"
+                />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/fileNameLayout"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:gravity="center"
+            android:focusable="true"
+            android:clickable="true"
+            >
+
+            <ImageView
+                android:id="@+id/fileThumbnail"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/upload_file_icon"
+                android:layout_gravity="center"
+                />
+
+
+            <TextView
+                android:id="@+id/fileName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Dosya Adı.pdf"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:layout_marginStart="10dp"
+                android:padding="3dp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            >
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/savePostModify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kaydet"
+                android:visibility="gone"
+                android:background="@drawable/button_border"
+                android:textColor="@color/amber_custom"
+                />
+
+        </LinearLayout>
+
+
+
+
+        <LinearLayout
+            android:id="@+id/elementsLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView
+                android:focusable="true"
+                android:clickable="true"
+                android:id="@+id/likeImageView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/heart"
+                android:scaleType="centerInside"
+                />
+
+            <ImageView
+                android:focusable="true"
+                android:clickable="true"
+                android:id="@+id/commentImageView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/comment"
+                android:scaleType="centerInside"
+                />
+
+            <ImageView
+                android:focusable="true"
+                android:clickable="true"
+                android:id="@+id/sendImageView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/send"
+                android:scaleType="centerInside"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/textsLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <TextView
+                android:id="@+id/numberLikeTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="123 Likes"
+                android:gravity="center"
+                android:textColor="@android:color/darker_gray" />
+
+            <TextView
+                android:id="@+id/numberCommentsTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="45 Comments"
+                android:textColor="@android:color/darker_gray" />
+
+            <TextView
+                android:id="@+id/sendingNumberTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="10 Shares"
+                android:gravity="center"
+                android:textColor="@android:color/darker_gray" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/commentEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Yorum: "
+            android:textAlignment="viewStart"
+            android:inputType="textMultiLine"
+            android:visibility="gone"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/commentSendButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gönder"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            android:background="@drawable/button_border"
+            android:textColor="@color/amber_custom"
+            />
+
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/secondRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone"
+            android:scrollbars="vertical"
+            android:nestedScrollingEnabled="false"
+            />
+
+        <View
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/burgundy"
+            android:layout_gravity="center"
+            />
+
+
+    </LinearLayout>
+
+
+</androidx.core.widget.NestedScrollView>
