@@ -30,8 +30,3 @@ An Android social media app where users can share posts, like, comment, and foll
 
 ---
 
-## Installation
-
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/eraykstrl/SharingPhoto.git
